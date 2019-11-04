@@ -1,0 +1,40 @@
+{
+    "name": "yzh52521/think-mail",
+    "description": "A powerful and beautiful php mailer for All of ThinkPHP and Other PHP Frameworks based SwiftMailer",
+    "keywords": [
+        "think-mailer",
+        "mailer",
+        "phpmailer",
+        "swiftmailer",
+        "mail",
+        "thinkphp",
+        "thinkphp5",
+        "thinkphp6"
+    ],
+    "type": "library",
+    "license": "Apache-2.0",
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "yzh52521",
+            "email": "yzh52521@gmail.com"
+        }
+    ],
+    "homepage": "",
+    "require": {
+        "php": ">=7.1",
+        "swiftmailer/swiftmailer": "^5.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "mailer\\": "src/mailer"
+        }
+    },
+    "extra": {
+        "think": {
+            "config": {
+                "whoops": "src/Config/config.php"
+            }
+        }
+    }
+}
