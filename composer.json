@@ -22,9 +22,9 @@
     ],
     "homepage": "",
     "require": {
-        "php": ">=7.1",
-        "swiftmailer/swiftmailer": "^5.4",
-        "topthink/framework": "6.0.*"
+        "php": ">=5.6",
+        "topthink/framework": "6.0.*",
+        "swiftmailer/swiftmailer": "^5.4"
     },
     "autoload": {
         "psr-4": {
