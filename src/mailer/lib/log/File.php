@@ -25,14 +25,21 @@ class File
      */
     public static function write($content, $level = self::DEBUG)
     {
-        $now = date(' c ');
-        $path = Config::get('log_path', __DIR__ . '/../../../../log');
+        $now         = date(' c ');
+        $path        = Config::get('log_path', __DIR__ . '/../../../../log');
         $destination = $path . '/mailer-' . date('Y-m-d') . '.log';
         // 自动创建日志目录
         if (!is_dir($path)) {
             mkdir($path, 0777, true);
         }
+        if (PHP_SAPI == 'cli') {
+            $remote = '';
+            $url    = '';
+        } else {
+            $remote = $_SERVER["REMOTE_ADDR"] ? $_SERVER["REMOTE_ADDR"] : '127.0.0.1';
+            $url    = $_SERVER['REQUEST_URI'] ? $_SERVER['REQUEST_URI'] : '/';
+        }
         $content = '[ ' . $level . ' ] ' . $content;
-        error_log("[{$now}] " . $_SERVER['REMOTE_ADDR'] . ' ' . $_SERVER['REQUEST_URI'] . "\r\n{$content}\r\n", 3, $destination);
+        error_log("[{$now}] " . $remote . ' ' . $url . "\r\n{$content}\r\n", 3, $destination);
     }
 }
