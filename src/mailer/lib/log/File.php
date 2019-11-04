@@ -36,8 +36,8 @@ class File
             $remote = '';
             $url    = '';
         } else {
-            $remote = $_SERVER["REMOTE_ADDR"] ??'127.0.0.1';
-            $url    = $_SERVER['REQUEST_URI'] ?? '/';
+            $remote = $_SERVER["REMOTE_ADDR"] ?$_SERVER["REMOTE_ADDR"]:'127.0.0.1';
+            $url    = $_SERVER['REQUEST_URI'] ?$_SERVER['REQUEST_URI':'/';
         }
         $content = '[ ' . $level . ' ] ' . $content;
         error_log("[{$now}] " . $remote . ' ' . $url . "\r\n{$content}\r\n", 3, $destination);
