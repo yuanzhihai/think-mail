@@ -133,12 +133,6 @@ git clone https://github.com/yzh52521/think-mail think-mailer
 
 git clone https://github.com/swiftmailer/swiftmailer swiftmailer
 
-或者点击直接下载:
-
-[https://github.com/yzh52521/think-mail/archive/master.zip](https://github.com/yzh52521/think-mailer/archive/master.zip)
-
-[https://github.com/swiftmailer/swiftmailer/archive/5.x.zip](https://github.com/swiftmailer/swiftmailer/archive/5.x.zip)
-
 #### 移动文件夹:
 然后将两个项目分别手动命名为 `think-mail` 和 `swiftmailer`, 放在自己项目的扩展类库文件夹里, 这两个文件夹必须在同一目录, 目录结构大概如下所示:
 ```
@@ -718,7 +712,7 @@ $mailer->attach(ROOT_PATH . 'foo.ext', function($attachment, $mailer) {
 
 
 ## Issues
-如果有遇到问题请提交 [issues](https://github.com/yzh52521/think-mailer/issues)
+如果有遇到问题请提交 [issues](https://github.com/yzh52521/think-mail/issues)
 
 
 ## License
