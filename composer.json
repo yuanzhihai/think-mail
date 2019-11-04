@@ -23,7 +23,8 @@
     "homepage": "",
     "require": {
         "php": ">=7.1",
-        "swiftmailer/swiftmailer": "^5.4"
+        "swiftmailer/swiftmailer": "^5.4",
+        "topthink/framework": "6.0.*"
     },
     "autoload": {
         "psr-4": {
@@ -33,7 +34,7 @@
     "extra": {
         "think": {
             "config": {
-                "whoops": "src/Config/config.php"
+                "mail": "src/Config/config.php"
             }
         }
     }
