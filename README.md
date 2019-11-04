@@ -3,7 +3,7 @@
 
 基于 SwiftMailer 二次开发, 为 ThinkPHP系列框架量身定制, 使 ThinkPHP 支持邮件模板、纯文本、附件邮件发送以及更多邮件功能, 邮件发送简单到只需一行代码
 
-同时了方便其他框架或者非框架使用, think-mailer也非常容易拓展融合到其他框架中, 欢迎大家 `Fork` 和 `Star`, 提交代码让think-mailer支持更多框架
+同时了方便其他框架或者非框架使用, think-mail也非常容易拓展融合到其他框架中, 欢迎大家 `Fork` 和 `Star`, 提交代码让think-mail支持更多框架
 
 ## 目录 
 * [优雅的发送邮件](#优雅的发送邮件) 
@@ -57,7 +57,7 @@ $mailer = Mailer::instance();
 $mailer->from('10086@qq.com@qq.com', 'cattong')
     ->to('your-mail@domain.com')
     ->subject('纯文本测试')
-    ->text('欢迎您使用think-mailer')
+    ->text('欢迎您使用think-mail')
     ->send();
 ```
 **ThinkPHP5.1.x 示例**
@@ -68,7 +68,7 @@ $mailer = Mailer::instance();
 $mailer->from('10086@qq.com@qq.com', 'cattong')
     ->to('your-mail@domain.com')
     ->subject('纯文本测试')
-    ->text('欢迎您使用think-mailer')
+    ->text('欢迎您使用think-mail')
     ->send();
 ```
 **ThinkPHP5.0.x / 5.1.x 示例**
@@ -84,7 +84,7 @@ $mailer->from('10086@qq.com@qq.com', 'cattong')
 ```
 你也可以这样: **ThinkPHP3.2.3 示例**
 ```
-require_once '/path/to/think-mailer/src/autoload.php';
+require_once '/path/to/think-mail/src/autoload.php';
 
 use mailer\tp32\Mailer;
 
@@ -93,7 +93,7 @@ $mailer->from('10086@qq.com', 'cattong')
     ->to('your-mail@domain.com')
     ->subject('多行文本测试')
     ->line('PHPer们: ')
-    ->line('欢迎你们使用think-mailer, 如果使用感觉很方面请给个Star, 也欢迎大家Fork帮忙完善')
+    ->line('欢迎你们使用think-mail, 如果使用感觉很方面请给个Star, 也欢迎大家Fork帮忙完善')
     ->line()
     ->line('cattong <10086@qq.com ' . date('Y-m-d'))
     ->attach('/path/to/文件名.pdf', '自定义文件名.pdf')
@@ -101,7 +101,7 @@ $mailer->from('10086@qq.com', 'cattong')
 ```
 你还可以这样: **ThinkPHP3.1.3 示例**
 ```
-require_once '/path/to/think-mailer/src/autoload.php';
+require_once '/path/to/think-mail/src/autoload.php';
 
 use mailer\tp31\Mailer;
 
@@ -140,10 +140,10 @@ git clone https://github.com/swiftmailer/swiftmailer swiftmailer
 [https://github.com/swiftmailer/swiftmailer/archive/5.x.zip](https://github.com/swiftmailer/swiftmailer/archive/5.x.zip)
 
 #### 移动文件夹:
-然后将两个项目分别手动命名为 `think-mailer` 和 `swiftmailer`, 放在自己项目的扩展类库文件夹里, 这两个文件夹必须在同一目录, 目录结构大概如下所示:
+然后将两个项目分别手动命名为 `think-mail` 和 `swiftmailer`, 放在自己项目的扩展类库文件夹里, 这两个文件夹必须在同一目录, 目录结构大概如下所示:
 ```
 扩展目录
-├── think-mailer
+├── think-mail
 │   └── src
 ├── swiftmailer
 │   ├── lib
@@ -154,7 +154,7 @@ git clone https://github.com/swiftmailer/swiftmailer swiftmailer
 #### 引入自动载入文件:
 使用时引入或者全局自动引入
 
-`require_once '/path/to/think-mailer/src/autoload.php`;
+`require_once '/path/to/think-mail/src/autoload.php`;
 
 
 ## 配置
@@ -197,7 +197,7 @@ public static function write($content, $level = 'debug')
 ```
 
 #### log_path
-日志驱动为默认是日志存储路径，不配置默认为 `think-mailer/log/`，例如可配置为 `ROOT_PATH . 'runtime/log/'`
+日志驱动为默认是日志存储路径，不配置默认为 `think-mail/log/`，例如可配置为 `ROOT_PATH . 'runtime/log/'`
 
 #### embed
 图片内联嵌入标识，请参考 [将图片作为元数据嵌入到邮件中](#将图片作为元数据嵌入到邮件中)
@@ -205,7 +205,7 @@ public static function write($content, $level = 'debug')
 ## 使用
 > 以下使用及方法兼容所有框架, 包括 ThinkPHP5, ThinkPHP3.2, ThinkPHP3.1, 唯一有所区别的是 ThinkPHP3.2 和 ThinkPHP3.1 不支持composer自动载入, 需手动引入自动载入文件, 使用时引入或者全局自动引入:
 
-> `require_once '/path/to/think-mailer/src/autoload.php';`
+> `require_once '/path/to/think-mail/src/autoload.php';`
 
 > 使用use时, ThinkPHP5 的Mailer类的命名空间是 `mailer/tp5/Mailer`, ThinkPHP3.2 的命名空间是 `mailer/tp32/Mailer`, ThinkPHP3.1 的命名空间是  `mailer/tp31/Mailer`
 
@@ -214,7 +214,7 @@ public static function write($content, $level = 'debug')
 ### 使用think-mailer
 ```
 // 不支持自动载入的框架请手动引入自动载入文件
-// require_once '/path/to/think-mailer/src/autoload.php';
+// require_once '/path/to/think-mail/src/autoload.php';
 
 use mailer\tp5\Mailer
 ```
@@ -431,7 +431,7 @@ $mailer->priority(MailerConfig::PRIORITY_HIGHEST);
 // MailerConfig::PRIORITY_LOW
 // MailerConfig::PRIORITY_LOWEST
 ```
-> `MailerConfig` 的完整命名空间为 `mailer/lib/MailerConfig`
+> `MailerConfig` 的完整命名空间为 `mail/lib/MailerConfig`
 
 ### Requesting a Read Receipt
 ```
@@ -718,7 +718,7 @@ $mailer->attach(ROOT_PATH . 'foo.ext', function($attachment, $mailer) {
 
 
 ## Issues
-如果有遇到问题请提交 [issues](https://github.com/cattong/think-mailer/issues)
+如果有遇到问题请提交 [issues](https://github.com/yzh52521/think-mailer/issues)
 
 
 ## License
