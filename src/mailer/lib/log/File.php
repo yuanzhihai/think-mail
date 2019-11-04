@@ -25,8 +25,11 @@ class File
      */
     public static function write($content, $level = self::DEBUG)
     {
-        $now         = date(' c ');
-        $path        = Config::get('log_path', __DIR__ . '/../../../../log');
+        $now  = date(' c ');
+        $path = Config::get('log_path');
+        if (empty($path)) {
+            $path = dirname($_SERVER['DOCUMENT_ROOT']) . '/runtime/log/think-mail' . DIRECTORY_SEPARATOR;
+        }
         $destination = $path . '/mailer-' . date('Y-m-d') . '.log';
         // 自动创建日志目录
         if (!is_dir($path)) {
@@ -37,7 +40,7 @@ class File
             $url    = '';
         } else {
             $remote = $_SERVER["REMOTE_ADDR"] ? $_SERVER["REMOTE_ADDR"] : '127.0.0.1';
-            $url    = $_SERVER['REQUEST_URI'] ? $_SERVER['REQUEST_URI']:'/';
+            $url    = $_SERVER['REQUEST_URI'] ? $_SERVER['REQUEST_URI'] : '/';
         }
         $content = '[ ' . $level . ' ] ' . $content;
         error_log("[{$now}] " . $remote . ' ' . $url . "\r\n{$content}\r\n", 3, $destination);
