@@ -1,5 +1,5 @@
 ## Think Mail
-**一款支持所有PHP框架的优美的邮件发送类**，ThinkPHP系列框架【3.1.x,3.2.x,5.0.x,5.1.x,6.0.x】开箱即用，其他框架初始化配置即可使用
+**一款支持所有PHP框架的优美的邮件发送类**，ThinkPHP系列框架【5.0.x,5.1.x,6.0.x】开箱即用，其他框架初始化配置即可使用
 
 基于 SwiftMailer 二次开发, 为 ThinkPHP系列框架量身定制, 使 ThinkPHP 支持邮件模板、纯文本、附件邮件发送以及更多邮件功能, 邮件发送简单到只需一行代码
 
@@ -81,40 +81,6 @@ $mailer->from('10086@qq.com@qq.com', 'cattong')
     ->subject('纯文本测试')
     ->text('欢迎您使用think-mailer')
     ->send();
-```
-你也可以这样: **ThinkPHP3.2.3 示例**
-```
-require_once '/path/to/think-mail/src/autoload.php';
-
-use mailer\tp32\Mailer;
-
-$mailer = Mailer::instance();
-$mailer->from('10086@qq.com', 'cattong')
-    ->to('your-mail@domain.com')
-    ->subject('多行文本测试')
-    ->line('PHPer们: ')
-    ->line('欢迎你们使用think-mail, 如果使用感觉很方面请给个Star, 也欢迎大家Fork帮忙完善')
-    ->line()
-    ->line('cattong <10086@qq.com ' . date('Y-m-d'))
-    ->attach('/path/to/文件名.pdf', '自定义文件名.pdf')
-    ->send();
-```
-你还可以这样: **ThinkPHP3.1.3 示例**
-```
-require_once '/path/to/think-mail/src/autoload.php';
-
-use mailer\tp31\Mailer;
-
-$mailer = Mailer::instance();
-$mailer->send(function($mailer, $message) {
-    $mailer->to('10086@qq.com')
-        ->subject('使用框架模板引擎渲染模板测试')
-        ->view('mail:test', array(
-            'param1' => '参数1',
-            'param2' => '参数2',
-            'param3' => '参数3'
-        ));
-});
 ```
 
 
@@ -593,7 +559,7 @@ Mailer::addMethod('view', function ($template, $param = [], $config = [])
     return $this->html($content);
 });
 
-// 不用use mailer\tp5\Mailer，直接使用mailer\lib\Mailer调用view方法发送邮件
+// 不用use mailer\tp6\Mailer，直接使用mailer\lib\Mailer调用view方法发送邮件
 $ret = Mailer::instance()
         ->to('10086@qq.com')
         ->subject('测试邮件')

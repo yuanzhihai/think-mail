@@ -22,7 +22,7 @@
     ],
     "homepage": "",
     "require": {
-        "php": ">=5.4",
+        "php": ">=7.1",
         "swiftmailer/swiftmailer": "^5.4"
     },
     "autoload": {
