@@ -88,7 +88,7 @@ $mailer->from('10086@qq.com@qq.com', 'cattong')
 ### 使用 Composer 安装 (强烈推荐):
 支持 `psr-4` 规范, 开箱即用
 ```
-composer require yzh52521/think-mail
+composer require yzh52521/think-mail dev-master
 ```
 
 ### github下载 或 直接手动下载源码:
