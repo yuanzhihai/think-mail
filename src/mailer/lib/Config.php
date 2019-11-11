@@ -85,7 +85,7 @@ class Config
             if (strpos(\think\App::VERSION, '6.0') !== false) {
                 self::$config = \think\facade\Config::get('mail');
             } else {
-                self::$config = \think\facade\Config::pull('mail');
+                self::$config = \think\facade\Config::get('mail.');
             }
         } elseif (class_exists('\\think\\Config')) {
             // thinkphp5自动探测初始化配置项
