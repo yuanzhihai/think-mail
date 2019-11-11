@@ -10,6 +10,7 @@
 
 namespace mailer\lib;
 
+
 /**
  * Class Config
  * @package mailer\lib
@@ -81,8 +82,7 @@ class Config
     private static function detect()
     {
         if (class_exists('\\think\\facade\\Config')) {
-            //thinkphp6.0 | thinkphp5.1自动探测初始化配置项
-            self::$config = \think\facade\Config::get('mail');
+            self::$config = \think\facade\Config::pull('mail');
         } elseif (class_exists('\\think\\Config')) {
             // thinkphp5自动探测初始化配置项
             self::$config = \think\Config::get('mail');
