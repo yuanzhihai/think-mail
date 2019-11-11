@@ -82,7 +82,11 @@ class Config
     private static function detect()
     {
         if (class_exists('\\think\\facade\\Config')) {
-            self::$config = \think\facade\Config::pull('mail');
+            if (strpos(\think\App::VERSION, '6.0') !== false) {
+                self::$config = \think\facade\Config::get('mail');
+            } else {
+                self::$config = \think\facade\Config::pull('mail');
+            }
         } elseif (class_exists('\\think\\Config')) {
             // thinkphp5自动探测初始化配置项
             self::$config = \think\Config::get('mail');
