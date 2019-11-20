@@ -71,7 +71,7 @@ $mailer->from('10086@qq.com@qq.com', 'cattong')
     ->text('欢迎您使用think-mail')
     ->send();
 ```
-**ThinkPHP5.0.x / 5.1.x 示例**
+**ThinkPHP5.0.x 示例**
 ```
 use mailer\tp5\Mailer;
 
@@ -183,22 +183,6 @@ use mailer\tp5\Mailer
 不传递任何参数表示邮件驱动使用配置文件里默认的配置
 ```
 $mailer = Mailer::instance();
-```
-如果你想实例化时不使用配置文件里的默认配置, 你可以这样:
-```
-$mailer = Mailer::instance(function() {
-    return \Swift_SmtpTransport::newInstance(
-            'host', 'port', 'security' 
-        )
-        ->setUsername($config['addr'])
-        ->setPassword($config['pass']);
-});
-```
-匿名必须返回一个 `\Swift_SmtpTransport` 或 `\Swift_SendmailTransport` 或 `\Swift_MailTransport`, 详细配置请参考 [SwiftMailer Transport Types](http://swiftmailer.org/docs/sending.html#transport-types)
-
-你也可以直接手动传入一个现有的邮件驱动, 配置使用默认配置, 像这样:
-```
-$mailer = Mailer::instance('sendmail');
 ```
 
 ### 设置收件人
