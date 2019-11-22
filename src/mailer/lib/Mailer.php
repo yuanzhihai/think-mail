@@ -394,7 +394,7 @@ class Mailer
                 call_user_func_array($message, [& $this, & $this->message]);
             }
             // 邮件驱动
-            if (null === $transport && !$this->transport) {
+            if (null === $transport && $this->transport) {
                 $transport = $this->transport;
             }
             // 直接传递的是Swift_Transport对象
