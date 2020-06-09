@@ -172,6 +172,32 @@ class Mailer
     }
 
     /**
+     * 设置抄送人
+     * @param string|array $address
+     * @param null $name
+     * @return $this
+     */
+    public function cc($address, $name = null)
+    {
+        $this->message->setCc($address, $name);
+
+        return $this;
+    }
+
+    /**
+     * 设置暗抄人
+     * @param string|array $address
+     * @param null $name
+     * @return $this
+     */
+    public function bcc($address, $name = null)
+    {
+        $this->message->setBcc($address, $name);
+
+        return $this;
+    }
+
+    /**
      * 设置邮件内容为HTML内容
      *
      * @param string $content
