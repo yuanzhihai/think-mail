@@ -31,8 +31,11 @@
     "extra": {
         "think": {
             "config": {
-                "mail": "src/Config/config.php"
+                "mail": "src/config/config.php"
             }
+        },
+        "think-config": {
+            "mailer": "src/config/config.php"
         }
     }
 }
