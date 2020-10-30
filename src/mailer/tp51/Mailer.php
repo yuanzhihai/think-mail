@@ -9,7 +9,7 @@
  */
 namespace mailer\tp51;
 
-use think\View;
+use think\facade\View;
 use think\facade\Config as ThinkConfig;
 
 /**
