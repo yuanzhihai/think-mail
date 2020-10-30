@@ -27,18 +27,18 @@ class File
         $now  = date(' c ');
         $path = Config::get('log_path');
         if (empty($path)) {
-            $path = dirname($_SERVER['DOCUMENT_ROOT']) . '/runtime/log/think-mail' . DIRECTORY_SEPARATOR;
+            $path =  './runtime/log/think-mail' . DIRECTORY_SEPARATOR;
         }
         $destination = $path . '/mailer-' . date('Y-m-d') . '.log';
         // 自动创建日志目录
         if (!is_dir($path)) {
             mkdir($path, 0777, true);
         }
-        if (PHP_SAPI == 'cli') {
+        if (PHP_SAPI === 'cli') {
             $remote = '';
             $url    = '';
         } else {
-            $remote = $_SERVER["REMOTE_ADDR"] ? $_SERVER["REMOTE_ADDR"] : '127.0.0.1';
+            $remote = $_SERVER["REMOTE_ADDR"] ? $_SERVER["REMOTE_ADDR"] : '0.0.0.0';
             $url    = $_SERVER['REQUEST_URI'] ? $_SERVER['REQUEST_URI'] : '/';
         }
         $content = '[ ' . $level . ' ] ' . $content;

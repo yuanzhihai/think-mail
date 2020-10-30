@@ -58,9 +58,8 @@ class Config
         }
         if (isset(self::$config[$name])) {
             return self::$config[$name];
-        } else {
-            return $default;
         }
+        return $default;
     }
 
     /**

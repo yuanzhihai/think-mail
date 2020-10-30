@@ -67,11 +67,9 @@ class Transport
      */
     public function createSendmailDriver($sendmail = null)
     {
-        $transport = Swift_SendmailTransport::newInstance(
+        return Swift_SendmailTransport::newInstance(
             $sendmail ? $sendmail : Config::get('sendmail')
         );
-
-        return $transport;
     }
 
     /**
@@ -81,9 +79,7 @@ class Transport
      */
     public function createMailDriver()
     {
-        $transport = Swift_MailTransport::newInstance();
-
-        return $transport;
+        return Swift_MailTransport::newInstance();
     }
 
     /**
@@ -104,10 +100,14 @@ class Transport
             }
 
             return call_user_func_array($driverName, []);
-        } elseif (is_object($driverName)) {
+        }
+
+        if (is_object($driverName)) {
             // 驱动为对象直接返回
             return $driverName;
-        } elseif (is_string($driverName)) {
+        }
+
+        if (is_string($driverName)) {
             // 驱动为字符串，为内置驱动
             $driver = 'create' . ucfirst($driverName) . 'Driver';
             if (!method_exists($this, $driver)) {

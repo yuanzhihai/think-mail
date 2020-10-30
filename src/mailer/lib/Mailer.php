@@ -469,9 +469,8 @@ class Mailer
             if (Config::get('debug')) {
                 // 调试模式直接抛出异常
                 throw new Exception($e->getMessage());
-            } else {
-                return false;
             }
+            return false;
         }
     }
 
