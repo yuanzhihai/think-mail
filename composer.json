@@ -13,17 +13,15 @@
     ],
     "type": "library",
     "license": "Apache-2.0",
-    "minimum-stability": "dev",
     "authors": [
         {
             "name": "yzh52521",
             "email": "yzh52521@gmail.com"
         }
     ],
-    "homepage": "",
     "require": {
         "php": ">=5.6",
-        "swiftmailer/swiftmailer": "^5.4"
+        "swiftmailer/swiftmailer": "^6.2"
     },
     "autoload": {
         "psr-4": {
