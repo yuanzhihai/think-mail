@@ -11,7 +11,6 @@ namespace mailer\lib;
 
 use Swift_SmtpTransport;
 use Swift_SendmailTransport;
-use Swift_MailTransport;
 
 /**
  * Class Transport
