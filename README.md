@@ -54,7 +54,7 @@
 use mailer\tp6\Mailer;
 
 $mailer = Mailer::instance();
-$mailer->from('10086@qq.com@qq.com', 'cattong')
+$mailer->from('10086@qq.com@qq.com', 'yzh52521')
     ->to('your-mail@domain.com')
     ->subject('纯文本测试')
     ->text('欢迎您使用think-mail')
@@ -65,7 +65,7 @@ $mailer->from('10086@qq.com@qq.com', 'cattong')
 use mailer\tp51\Mailer;
 
 $mailer = Mailer::instance();
-$mailer->from('10086@qq.com@qq.com', 'cattong')
+$mailer->from('10086@qq.com@qq.com', 'yzh52521')
     ->to('your-mail@domain.com')
     ->subject('纯文本测试')
     ->text('欢迎您使用think-mail')
@@ -76,7 +76,7 @@ $mailer->from('10086@qq.com@qq.com', 'cattong')
 use mailer\tp5\Mailer;
 
 $mailer = Mailer::instance();
-$mailer->from('10086@qq.com@qq.com', 'cattong')
+$mailer->from('10086@qq.com@qq.com', 'yzh52521')
     ->to('your-mail@domain.com')
     ->subject('纯文本测试')
     ->text('欢迎您使用think-mailer')
@@ -189,17 +189,17 @@ $mailer = Mailer::instance();
 以下几种方式任选一种
 ```
 $mailer->to(['10086@qq.com']);
-$mailer->to(['10086@qq.com' => 'cattong']);
-$mailer->to('10086@qq.com', 'cattong');
-$mailer->to(['tianpian0805@qq.com', '10086@qq.com' => 'cattong']);
+$mailer->to(['10086@qq.com' => 'yzh52521']);
+$mailer->to('10086@qq.com', 'yzh52521');
+$mailer->to(['tianpian0805@qq.com', '10086@qq.com' => 'yzh52521']);
 $mailer->to(['tianpian0805@qq.com', '10086@qq.com', 'tianpian0805@163.com']);
 ```
 
 ### 设置发件人
 发件人邮箱地址必须和配置项里一致, 默认会自动设置发件地址 (配置里的addr) 和发件人 (配置里的name)
 ```
-$mailer->from('10086@qq.com', 'cattong');
-$mailer->from(['10086@qq.com' => 'cattong']);
+$mailer->from('10086@qq.com', 'yzh52521');
+$mailer->from(['10086@qq.com' => 'yzh52521']);
 ```
 
 ### 设置邮件主题
@@ -280,7 +280,7 @@ $mailer->view('admin@mail/register', ['account' => $account, 'name' => $name]);
 #### 示例
 ```
 Mailer::instance()
-    ->to('10086@qq.com', 'cattong') 
+    ->to('10086@qq.com', 'yzh52521') 
     ->subject('测试邮件模板中嵌入图片元数据')
     ->view('index@mail/index', [
         'date' => date('Y-m-d H:i:s'),     
@@ -312,7 +312,7 @@ Mailer::instance()
 在 HTML 中使用一样:
 ```
 Mailer::instance()
-    ->to('10086@qq.com', 'cattong') 
+    ->to('10086@qq.com', 'yzh52521') 
     ->subject('测试邮件模板中嵌入图片元数据')
     ->html('<img src="{image}" />图片测试', [
         'embed:image' => ROOT_PATH . 'image.jpg',
