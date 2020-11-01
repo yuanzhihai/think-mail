@@ -4,7 +4,7 @@
  *
  * @author    yzh52521
  * @link      https://github.com/yzh52521/think-mail
- * @copyright 2019 yzh52521 all rights reserved.
+ * @copyright 2020 yzh52521 all rights reserved.
  * @license   http://www.apache.org/licenses/LICENSE-2.0
  */
 namespace mailer\lib\log;
@@ -31,15 +31,15 @@ class File
         }
         $destination = $path . '/mailer-' . date('Y-m-d') . '.log';
         // 自动创建日志目录
-        if (!is_dir($path)) {
-            mkdir($path, 0777, true);
+        if (!is_dir($path) && !mkdir($path, 0777, true) && !is_dir($path)) {
+            throw new \RuntimeException(sprintf('Directory "%s" was not created', $path));
         }
         if (PHP_SAPI === 'cli') {
             $remote = '';
             $url    = '';
         } else {
-            $remote = $_SERVER["REMOTE_ADDR"] ? $_SERVER["REMOTE_ADDR"] : '0.0.0.0';
-            $url    = $_SERVER['REQUEST_URI'] ? $_SERVER['REQUEST_URI'] : '/';
+            $remote = $_SERVER["REMOTE_ADDR"] ?: '0.0.0.0';
+            $url    = $_SERVER['REQUEST_URI'] ?: '/';
         }
         $content = '[ ' . $level . ' ] ' . $content;
         error_log("[{$now}] " . $remote . ' ' . $url . "\r\n{$content}\r\n", 3, $destination);

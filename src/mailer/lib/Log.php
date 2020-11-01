@@ -4,7 +4,7 @@
  *
  * @author    yzh52521
  * @link      https://github.com/yzh52521/think-mail
- * @copyright 2019 yzh52521 all rights reserved.
+ * @copyright 2020 yzh52521 all rights reserved.
  * @license   http://www.apache.org/licenses/LICENSE-2.0
  */
 
@@ -47,7 +47,6 @@ class Log
     public static function write($content, $level = self::DEBUG)
     {
         self::init();
-
         $driver = self::$driver;
         $driver::write($content, $level);
     }
