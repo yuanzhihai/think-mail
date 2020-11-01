@@ -10,8 +10,6 @@
 namespace mailer\lib;
 
 use Swift_DependencyContainer;
-use Swift_SmtpTransport;
-use Swift_SendmailTransport;
 
 /**
  * Class Transport
