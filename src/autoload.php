@@ -18,4 +18,4 @@ function classLoader($class)
 }
 spl_autoload_register('classLoader');
 
-require_once  __DIR__ . '/../../swiftmailer/lib/swift_required.php';
+require_once  __DIR__ . '/../../swiftmailer/swiftmailer/lib/swift_required.php';
