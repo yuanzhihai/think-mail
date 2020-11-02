@@ -4,7 +4,7 @@
  *
  * @author    yzh52521
  * @link      https://github.com/yzh52521/think-mail
- * @copyright 2019 yzh52521 all rights reserved.
+ * @copyright 2020 yzh52521 all rights reserved.
  * @license   http://www.apache.org/licenses/LICENSE-2.0
  */
 
@@ -33,7 +33,7 @@ class Mailer
      */
     protected $message;
     /**
-     * @var \Swift_SmtpTransport|\Swift_SendmailTransport|\Swift_MailTransport
+     * @var \Swift_DependencyContainer
      */
     protected $transport;
     /**
@@ -116,13 +116,12 @@ class Mailer
      */
     public function init()
     {
-        $this->message = Swift_Message::newInstance(
+        $this->message = (new Swift_Message(
             null,
             null,
             Config::get('content_type'),
             Config::get('charset')
-        )
-            ->setFrom(Config::get('addr'), Config::get('name'));
+        ))->setFrom(Config::get('addr'), Config::get('name'));
 
         return $this;
     }
@@ -302,7 +301,7 @@ class Mailer
     public function signCertificate($smimeSigner)
     {
         if ($smimeSigner instanceof \Closure) {
-            $signer = \Swift_Signers_SMimeSigner::newInstance();
+            $signer = new \Swift_Signers_SMimeSigner();
             call_user_func_array($smimeSigner, [& $signer]);
             $this->message->attachSigner($signer);
         }
@@ -355,7 +354,7 @@ class Mailer
     /**
      * Requesting a Read Receipt
      *
-     * @param string $address
+     * @param $address
      *
      * @return $this
      */
@@ -380,7 +379,7 @@ class Mailer
     /**
      * 获取头信息
      *
-     * @return \Swift_Mime_HeaderSet
+     * @return \Swift_Mime_SimpleHeaderSet
      */
     public function getHeaders()
     {
@@ -436,7 +435,7 @@ class Mailer
                 }
             }
 
-            $swiftMailer = Swift_Mailer::newInstance($transportDriver);
+            $swiftMailer = new Swift_Mailer($transportDriver);
             // debug模式记录日志
             if (Config::get('debug')) {
                 Log::write(var_export($this->getHeadersString(), true), Log::INFO);
@@ -517,12 +516,8 @@ class Mailer
     protected function parseParam(array $param, array $config = [])
     {
         $ret = [];
-        $leftDelimiter = isset($config['left_delimiter'])
-            ? $config['left_delimiter']
-            : Config::get('left_delimiter', '{');
-        $rightDelimiter = isset($config['right_delimiter'])
-            ? $config['right_delimiter']
-            : Config::get('right_delimiter', '}');
+        $leftDelimiter = $config['left_delimiter'] ?? Config::get('left_delimiter', '{');
+        $rightDelimiter = $config['right_delimiter'] ?? Config::get('right_delimiter', '}');
         foreach ($param as $k => $v) {
             // 处理变量中包含有对元数据嵌入的变量
             $this->embedImage($k, $v, $param);
@@ -552,7 +547,7 @@ class Mailer
                 }
                 list($imgData, $name, $mime) = $v;
                 $v = $this->message->embed(
-                    \Swift_Image::newInstance($imgData, $name, $mime)
+                   new \Swift_Image($imgData, $name, $mime)
                 );
             } else {
                 $v = $this->message->embed(\Swift_Image::fromPath($v));

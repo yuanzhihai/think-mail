@@ -1,7 +1,10 @@
-## Think Mail
+## Think Mail2.0
+
+think-mail2.0的运行环境要求PHP7.0+。
+
 **一款支持所有PHP框架的优美的邮件发送类**，ThinkPHP系列框架【5.0.x,5.1.x,6.0.x】开箱即用，其他框架初始化配置即可使用
 
-基于 SwiftMailer 二次开发, 为 ThinkPHP系列框架量身定制, 使 ThinkPHP 支持邮件模板、纯文本、附件邮件发送以及更多邮件功能, 邮件发送简单到只需一行代码
+基于 SwiftMailer6 二次开发, 为 ThinkPHP系列框架量身定制, 使 ThinkPHP 支持邮件模板、纯文本、附件邮件发送以及更多邮件功能, 邮件发送简单到只需一行代码
 
 同时了方便其他框架或者非框架使用, think-mail也非常容易拓展融合到其他框架中, 欢迎大家 `Fork` 和 `Star`, 提交代码让think-mail支持更多框架
 

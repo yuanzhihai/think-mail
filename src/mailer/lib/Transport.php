@@ -9,9 +9,7 @@
  */
 namespace mailer\lib;
 
-use Swift_SmtpTransport;
-use Swift_SendmailTransport;
-use Swift_MailTransport;
+use Swift_DependencyContainer;
 
 /**
  * Class Transport
@@ -35,22 +33,18 @@ class Transport
      * 创建一个smtp传输对象
      *
      * @param array $config 配置信息
-     *
-     * @return Swift_SmtpTransport
+     * @return mixed
+     * @throws \Swift_DependencyException
      */
     public function createSmtpDriver($config = [])
     {
         $config = array_merge(Config::get(), $config);
-
-        $transport = Swift_SmtpTransport::newInstance(
-            $config['host'], $config['port'], $config['security']
-        );
-
-        if (isset($config['addr'])) {
-            $transport->setUsername($config['addr']);
-            $transport->setPassword($config['pass']);
-        }
-
+        $transport = Swift_DependencyContainer::getInstance()->lookup('transport.smtp')
+            ->setHost($config['host'])
+            ->setPort($config['port'])
+            ->setUsername($config['addr'])
+            ->setPassword($config['pass'])
+            ->setEncryption($config['security']);
         if (isset($config['stream'])) {
             $transport->setStreamOptions($config['stream']);
         }
@@ -62,24 +56,24 @@ class Transport
      * 创建一个sendmail传输对象
      *
      * @param $sendmail null|string sendmail配置
-     *
-     * @return Swift_SendmailTransport
+     * @return mixed
+     * @throws \Swift_DependencyException
      */
     public function createSendmailDriver($sendmail = null)
     {
-        return Swift_SendmailTransport::newInstance(
-            $sendmail ? $sendmail : Config::get('sendmail')
-        );
+        return Swift_DependencyContainer::getInstance()->lookup('transport.sendmail')
+            ->setCommand($sendmail ?: Config::get('sendmail'));
     }
 
     /**
      * 创建一个mail传输对象
      *
-     * @return Swift_MailTransport
+     * @return array|mixed
+     * @throws \Swift_DependencyException
      */
     public function createMailDriver()
     {
-        return Swift_MailTransport::newInstance();
+        return Swift_DependencyContainer::getInstance()->lookup('transport.mail');
     }
 
     /**
@@ -114,7 +108,6 @@ class Transport
                 throw new BadMethodCallException("Mailer driver {$driverName} not exist");
             }
         }
-
 
         return $this->$driver();
     }

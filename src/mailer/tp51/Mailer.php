@@ -4,7 +4,7 @@
  *
  * @author    yzh52521
  * @link      https://github.com/yzh52521/think-mail
- * @copyright 2019 yzh52521 all rights reserved.
+ * @copyright 2020 yzh52521 all rights reserved.
  * @license   http://www.apache.org/licenses/LICENSE-2.0
  */
 namespace mailer\tp51;
@@ -29,7 +29,7 @@ class Mailer extends \mailer\lib\Mailer
      */
     public function view($template, $param = [], $config = [])
     {
-        $view = View::instance(ThinkConfig::get('template'), ThinkConfig::get('view_replace_str'));
+        $view = View::instance(ThinkConfig::get('template'), ThinkConfig::get('tpl_replace_string'));
         // 处理变量中包含有对元数据嵌入的变量
         foreach ($param as $k => $v) {
             $this->embedImage($k, $v, $param);
