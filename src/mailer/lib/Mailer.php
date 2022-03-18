@@ -81,7 +81,7 @@ class Mailer
      *
      * @return $this
      */
-    public function charset($charset)
+    public function charset(string $charset)
     {
         $this->charset = $charset;
         return $this;
@@ -110,7 +110,7 @@ class Mailer
      */
     public function from($address)
     {
-        $this->message->from($address);
+        $this->message->from(...$this->convertStringsToAddresses($address));
 
         return $this;
     }
@@ -124,7 +124,7 @@ class Mailer
      */
     public function to($address)
     {
-        $this->message->to($address);
+        $this->message->to(...$this->convertStringsToAddresses($address));
 
         return $this;
     }
@@ -136,7 +136,7 @@ class Mailer
      */
     public function cc($address)
     {
-        $this->message->cc($address);
+        $this->message->cc(...$this->convertStringsToAddresses($address));
 
         return $this;
     }
@@ -148,7 +148,7 @@ class Mailer
      */
     public function bcc($address)
     {
-        $this->message->bcc($address);
+        $this->message->bcc(...$this->convertStringsToAddresses($address));
 
         return $this;
     }
@@ -174,6 +174,8 @@ class Mailer
      * 设置邮件内容为纯文本内容
      *
      * @param string $content
+     * @param $param
+     * @param $config
      *
      * @return $this
      */
@@ -191,12 +193,14 @@ class Mailer
      * 设置邮件内容为纯文本内容
      *
      * @param string $content
+     * @param $param
+     * @param $config
      *
-     * @return Mailer
+     * @return $this
      */
-    public function raw(string $content)
+    public function raw(string $content, $param, $config)
     {
-        $this->text($content, $param = [], $config = []);
+        $this->text($content, $param, $config);
 
         return $this;
     }
@@ -206,33 +210,52 @@ class Mailer
      * 添加附件
      *
      * @param string $filePath
-     * @param string|null $name
+     * @param array $options
      *
      * @return $this
      */
-    public function attachFromPath(string $filePath, string $name = null)
+    public function attach(string $filePath, array $options = [])
     {
-        $this->message->attachFromPath($filePath, $name);
+        $file = [];
+        if (!empty($options['fileName'])) {
+            $file['name'] = $options['fileName'];
+        } else {
+            $file['name'] = $filePath;
+        }
+        if (!empty($options['contentType'])) {
+            $file['contentType'] = $options['contentType'];
+        } else {
+            $file['contentType'] = mime_content_type($filePath);
+        }
+        $this->message->attachFromPath($filePath, $file['name'], $file['contentType']);
 
         return $this;
     }
 
     /**
-     * 添加附件
-     *
-     * @param string $body
-     * @param string $filePath
-     * @param string|null $name
+     * @param $content
+     * @param array $options
      *
      * @return $this
      */
-    public function attach(string $body, string $filePath, string $name = null)
+    public function attachContent($content, array $options = [])
     {
-        $this->message->attach($body, $filePath, $name);
+        $file = [];
+        if (!empty($options['fileName'])) {
+            $file['name'] = $options['fileName'];
+        } else {
+            $file['name'] = null;
+        }
 
+        if (!empty($options['contentType'])) {
+            $file['contentType'] = $options['contentType'];
+        } else {
+            $file['contentType'] = null;
+        }
+
+        $this->message->attach($content, $file['name'], $file['contentType']);
         return $this;
     }
-
 
     /**
      * 设置优先级
@@ -244,6 +267,18 @@ class Mailer
     public function priority(int $priority = 1)
     {
         $this->message->priority($priority);
+
+        return $this;
+    }
+
+    /**
+     * 设置回复邮件
+     * @param Address|string $address
+     * @return $this
+     */
+    public function replyTo($address)
+    {
+        $this->message->replyTo($address);
 
         return $this;
     }
@@ -340,17 +375,6 @@ class Mailer
         }
     }
 
-    /**
-     * 中文文件名编码, 防止乱码
-     *
-     * @param string $string
-     *
-     * @return string
-     */
-    public function cnEncode(string $string)
-    {
-        return "=?UTF-8?B?" . base64_encode($string) . "?=";
-    }
 
     /**
      * 对嵌入元数据的变量进行处理
@@ -371,15 +395,62 @@ class Mailer
                     $v[2] = 'image.jpg';
                 }
                 [$imgData, $name, $mime] = $v;
-                $v = $this->message->embed($imgData, $name, $mime);
+                $v = $this->message->embedFromPath($imgData, $name, $mime);
             } else {
-                $v = $this->message->embed($v);
+                $v = $this->message->embedFromPath($v);
             }
             unset($param[$k]);
             $k         = substr($k, strlen($flag));
             $param[$k] = $v;
         }
     }
+
+    /**
+     * Converts address instances to their string representations.
+     *
+     * @param Address[] $addresses
+     *
+     * @return array<string, string>|string
+     */
+    private function convertAddressesToStrings(array $addresses)
+    {
+        $strings = [];
+
+        foreach ($addresses as $address) {
+            $strings[$address->getAddress()] = $address->getName();
+        }
+
+        return empty($strings) ? '' : $strings;
+    }
+
+    /**
+     * Converts string representations of address to their instances.
+     *
+     * @param array<int|string, string>|string $strings
+     *
+     * @return Address[]
+     */
+    private function convertStringsToAddresses($strings): array
+    {
+        if (is_string($strings)) {
+            return [new Address($strings)];
+        }
+
+        $addresses = [];
+
+        foreach ($strings as $address => $name) {
+            if (!is_string($address)) {
+                // email address without name
+                $addresses[] = new Address($name);
+                continue;
+            }
+
+            $addresses[] = new Address($address, $name);
+        }
+
+        return $addresses;
+    }
+
 
     /**
      * 获取错误信息

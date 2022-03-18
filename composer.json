@@ -18,7 +18,8 @@
     ],
     "require": {
         "php": ">=7.4",
-        "symfony/mailer": "^5.3|^6.0"
+        "symfony/mailer": "^5.3|^6.0",
+        "ext-fileinfo": "*"
     },
     "require-dev": {
         "topthink/framework": "^6.0"
