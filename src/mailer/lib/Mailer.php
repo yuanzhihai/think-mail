@@ -43,7 +43,7 @@ class Mailer
      *
      * @return Mailer
      */
-    public static function compose($transport = null)
+    public static function instance($transport = null)
     {
         if (null === self::$instance) {
             self::$instance = new static($transport);
