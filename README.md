@@ -48,7 +48,7 @@ public static function write($content, $level = 'debug')
     echo '日志内容：' . $content;
     echo '日志级别：' . $level;
 }
-
+```
 
 #### log_path
 日志驱动为默认是日志存储路径，不配置默认为 `think-mail/log/`，例如可配置为 `ROOT_PATH . 'runtime/log/'`
@@ -132,11 +132,11 @@ $mailer->view('admin@mail/register', ['account' => $account, 'name' => $name]);
 在模板中, 例如 ThinkPHP 全系列都是使用 `{$var}` 的形式传递变量, 假设变量为 `image_src`, 那么模板中填写 `{$image_src}`, 如果是在HTML中, 请使用 `{image_src}`, 注意如果修改过左、右定界符请使用自己定义的左右定界符
 
 #### 传递变量参数和值
-在 `html()` 和 `view()` 方法的第二个参数里, 该数组必须有一个变量, 格式为 `['embed:image_src'] => '/path/to/image.jpg']` 或者 `['embed:image_src'] => ['file_stream', 'filemime', 'filename']]`, 即参数数组的键名是上面配置的 `嵌入标签 + 变量名`, 但值有两种情况:
+在 `html()` 和 `view()` 方法的第二个参数里, 该数组必须有一个变量, 格式为 `['cid:image_src'] => '/path/to/image.jpg']` 或者 `['cid:image_src'] => ['file_stream', 'filename','filemime']]`, 即参数数组的键名是上面配置的 `嵌入标签 + 变量名`, 但值有两种情况:
 
 第一, 如果值为字符串, 则该值为图片的路径 (绝对路径或相对路径) 或者 有效的url地址;
 
-第二, 如果值为数组, 数组为 `['stream', 'mime', 'name']` 的形式, 其中 `stream` 表示图片的数据流, 即是未保存的文件数据流, 例如 `file_get_contents()` 方法获取的文件数据流, 第二个参数可选, 为文件的mime类型, 默认为 `image/jpeg`, 第三个参数为文件名, 默认为 `image.jpg`
+第二, 如果值为数组, 数组为 `['stream','name','mime',]` 的形式, 其中 `stream` 表示图片的数据流, 即是未保存的文件数据流, 例如 `file_get_contents()` 方法获取的文件数据流, 第二个参数为文件名, 默认为 `image.jpg`,第二个参数可选, 为文件的mime类型, 默认为 `image/jpeg`
 
 #### 示例
 ```

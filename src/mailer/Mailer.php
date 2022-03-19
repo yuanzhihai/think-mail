@@ -568,15 +568,13 @@ class Mailer
         if (false !== strpos($k, $flag)) {
             if (is_array($v) && $v) {
                 if (!isset($v[1])) {
-                    $v[1] = 'image/jpeg';
+                    $v[1] = 'image.jpg';
                 }
                 if (!isset($v[2])) {
-                    $v[2] = 'image.jpg';
+                    $v[2] = 'image/jpeg';
                 }
                 [$imgData, $name, $mime] = $v;
                 $v = $this->message->embedFromPath($imgData, $name, $mime);
-            } else {
-                $v = $this->message->embedFromPath($v);
             }
             unset($param[$k]);
             $k         = substr($k, strlen($flag));
