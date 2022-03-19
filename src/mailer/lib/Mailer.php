@@ -32,8 +32,10 @@ class Mailer
      */
     protected Email $message;
 
-
-    protected $transport;
+    /**
+     * @var string|null 错误信息
+     */
+    protected ?string $err_msg;
 
     /**
      *
@@ -345,6 +347,7 @@ class Mailer
                 $mailer->send($this->message);
             }
         } catch (TransportExceptionInterface $e) {
+            $this->err_msg = $e->getMessage();
             if (Config::get('debug')) {
                 // 将错误信息记录在日志中
                 $log = "Error: " . $e->getMessage() . "\n"
@@ -354,10 +357,20 @@ class Mailer
             }
             throw new Exception($e->getMessage());
         } catch (\Exception $e) {
+            $this->err_msg = $e->getMessage();
             throw new Exception($e->getMessage());
         }
     }
 
+    /**
+     * 获取错误信息
+     *
+     * @return mixed
+     */
+    public function getError()
+    {
+        return $this->err_msg;
+    }
 
     /**
      * 对嵌入元数据的变量进行处理
