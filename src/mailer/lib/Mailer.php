@@ -328,9 +328,8 @@ class Mailer
 
     /**
      * 发送邮件
-     * @param null $transport
+     * @param null $message
      * @param \Closure|null $send
-     * @return false
      * @throws Exception
      */
     public function send($message = null, \Closure $send = null)
