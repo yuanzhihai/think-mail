@@ -1,18 +1,22 @@
 <?php
 /**
- * think-mail [A powerful and beautiful php mailer for All of ThinkPHP and Other PHP Framework based SwiftMailer]
+ * think-mail [A powerful and beautiful php mailer for All of ThinkPHP and Other PHP Framework based Symfony Mailer]
  *
  * @author    yzh52521
  * @link      https://github.com/yzh52521/think-mail
- * @copyright 2019 yzh52521 all rights reserved.
+ * @copyright 2022 yzh52521 all rights reserved.
  * @license   http://www.apache.org/licenses/LICENSE-2.0
  */
 
 namespace mailer\lib;
 
+use DateTimeImmutable;
+use DateTimeInterface;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\Transport\TransportInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\Mime\Header\HeaderInterface;
 
 /**
  * Class Mailer
@@ -60,10 +64,19 @@ class Mailer
      *
      * @return $this
      */
-    public function init()
+    public function init(): self
     {
         $this->message = new Email();
         return $this;
+    }
+
+    /**
+     * 获取字符编码
+     * @return string
+     */
+    public function getCharset(): string
+    {
+        return $this->charset;
     }
 
     /**
@@ -73,7 +86,7 @@ class Mailer
      *
      * @return $this
      */
-    public function charset(string $charset)
+    public function charset(string $charset): self
     {
         $this->charset = $charset;
         return $this;
@@ -86,10 +99,38 @@ class Mailer
      *
      * @return $this
      */
-    public function subject(string $subject)
+    public function subject(string $subject): self
     {
         $this->message->subject($subject);
 
+        return $this;
+    }
+
+
+    /**
+     * 获取邮件主题
+     * @return string
+     */
+    public function getSubject(): string
+    {
+        return (string)$this->message->getSubject();
+    }
+
+
+    public function getDate(): ?DateTimeImmutable
+    {
+        return $this->message->getDate();
+    }
+
+
+    /**
+     * 设置邮件date
+     * @param DateTimeInterface $date
+     * @return $this
+     */
+    public function date(DateTimeInterface $date): self
+    {
+        $this->message->date($date);
         return $this;
     }
 
@@ -100,11 +141,20 @@ class Mailer
      *
      * @return $this
      */
-    public function from($address)
+    public function from($address): self
     {
         $this->message->from(...$this->convertStringsToAddresses($address));
 
         return $this;
+    }
+
+    /**
+     * 获取发件人
+     * @return string|string[]
+     */
+    public function getFrom()
+    {
+        return $this->convertAddressesToStrings($this->message->getFrom());
     }
 
     /**
@@ -114,11 +164,19 @@ class Mailer
      *
      * @return $this
      */
-    public function to($address)
+    public function to($address): self
     {
         $this->message->to(...$this->convertStringsToAddresses($address));
 
         return $this;
+    }
+
+    /** 获取收件人
+     * @return string|string[]
+     */
+    public function getTo()
+    {
+        return $this->convertAddressesToStrings($this->message->getTo());
     }
 
     /**
@@ -126,7 +184,7 @@ class Mailer
      * @param Address|string $address
      * @return $this
      */
-    public function cc($address)
+    public function cc($address): self
     {
         $this->message->cc(...$this->convertStringsToAddresses($address));
 
@@ -134,13 +192,85 @@ class Mailer
     }
 
     /**
+     * 获取抄送人
+     * @return string|string[]
+     */
+    public function getCc()
+    {
+        return $this->convertAddressesToStrings($this->message->getCc());
+    }
+
+    /**
      * 设置暗抄人
      * @param Address|string $address
      * @return $this
      */
-    public function bcc($address)
+    public function bcc($address): self
     {
         $this->message->bcc(...$this->convertStringsToAddresses($address));
+
+        return $this;
+    }
+
+    /**
+     * 获取暗抄人
+     * @return string|string[]
+     */
+    public function getBcc()
+    {
+        return $this->convertAddressesToStrings($this->message->getBcc());
+    }
+
+    /**
+     * 获取邮件HTML内容
+     * @return string
+     */
+    public function getHtmlBody(): string
+    {
+        return (string)$this->message->getHtmlBody();
+    }
+
+    /**
+     * @param $name
+     * @param $value
+     * @return $this
+     */
+    public function addHeader($name, $value): self
+    {
+        $this->message->getHeaders()->addTextHeader($name, $value);
+        return $this;
+    }
+
+    /**
+     * @param $name
+     * @param $value
+     * @return $this
+     */
+    public function header($name, $value): self
+    {
+        $headers = $this->message->getHeaders();
+
+        if ($headers->has($name)) {
+            $headers->remove($name);
+        }
+
+        foreach ((array)$value as $v) {
+            $headers->addTextHeader($name, $v);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param array $headers
+     * @return $this
+     */
+    public function headers(array $headers): self
+    {
+        foreach ($headers as $name => $value) {
+            $this->header($name, $value);
+        }
 
         return $this;
     }
@@ -152,7 +282,7 @@ class Mailer
      *
      * @return $this
      */
-    public function html(string $content, $param, $config)
+    public function html(string $content, $param, $config): self
     {
         if ($param) {
             $content = strtr($content, $this->parseParam($param, $config));
@@ -162,23 +292,9 @@ class Mailer
         return $this;
     }
 
-    /**
-     * 设置邮件内容为纯文本内容
-     *
-     * @param string $content
-     * @param $param
-     * @param $config
-     *
-     * @return $this
-     */
-    public function text(string $content, $param, $config)
+    public function getTextBody(): string
     {
-        if ($param) {
-            $content = strtr($content, $this->parseParam($param, $config));
-        }
-        $this->message->text($content, $this->charset);
-
-        return $this;
+        return (string)$this->message->getTextBody();
     }
 
     /**
@@ -190,9 +306,12 @@ class Mailer
      *
      * @return $this
      */
-    public function raw(string $content, $param, $config)
+    public function text(string $content, $param, $config): self
     {
-        $this->text($content, $param, $config);
+        if ($param) {
+            $content = strtr($content, $this->parseParam($param, $config));
+        }
+        $this->message->text($content, $this->charset);
 
         return $this;
     }
@@ -206,7 +325,7 @@ class Mailer
      *
      * @return $this
      */
-    public function attach(string $filePath, array $options = [])
+    public function attach(string $filePath, array $options = []): self
     {
         $file = [];
         if (!empty($options['fileName'])) {
@@ -230,7 +349,7 @@ class Mailer
      *
      * @return $this
      */
-    public function attachContent($content, array $options = [])
+    public function attachContent($content, array $options = []): self
     {
         $file = [];
         if (!empty($options['fileName'])) {
@@ -256,11 +375,16 @@ class Mailer
      *
      * @return $this
      */
-    public function priority(int $priority = 1)
+    public function priority(int $priority = 1): self
     {
         $this->message->priority($priority);
 
         return $this;
+    }
+
+    public function getPriority(): int
+    {
+        return $this->message->getPriority();
     }
 
     /**
@@ -268,10 +392,48 @@ class Mailer
      * @param Address|string $address
      * @return $this
      */
-    public function replyTo($address)
+    public function replyTo($address): self
     {
         $this->message->replyTo($address);
 
+        return $this;
+    }
+
+    public function getReplyTo()
+    {
+        return $this->convertAddressesToStrings($this->message->getReplyTo());
+    }
+
+    public function getReturnPath(): string
+    {
+        $returnPath = $this->message->getReturnPath();
+        return $returnPath === null ? '' : $returnPath->getAddress();
+    }
+
+    /**
+     *
+     * @param string $address
+     * @return $this
+     */
+    public function returnPath(string $address): self
+    {
+        $this->message->returnPath($address);
+        return $this;
+    }
+
+    public function getSender(): string
+    {
+        $sender = $this->message->getSender();
+        return $sender === null ? '' : $sender->getAddress();
+    }
+
+    /**
+     * @param string $address
+     * @return $this
+     */
+    public function sender(string $address): self
+    {
+        $this->message->sender($address);
         return $this;
     }
 
@@ -279,11 +441,22 @@ class Mailer
     /**
      * 获取头信息
      *
-     * @return
      */
-    public function getHeaders()
+    public function getHeaders($name): array
     {
-        return $this->message->getHeaders();
+        $headers = $this->message->getHeaders();
+        if (!$headers->has($name)) {
+            return [];
+        }
+
+        $values = [];
+
+        /** @var HeaderInterface $header */
+        foreach ($headers->all($name) as $header) {
+            $values[] = $header->getBodyAsString();
+        }
+
+        return $values;
     }
 
     /**
@@ -293,7 +466,7 @@ class Mailer
      */
     public function getHeadersString(): string
     {
-        return $this->getHeaders()->toString();
+        return $this->message->getHeaders()->toString();
     }
 
     /**
@@ -321,22 +494,28 @@ class Mailer
     /**
      * 发送邮件
      * @param null $message
+     * @param array $transport
      * @param \Closure|null $send
-     * @throws Exception
+     * @return bool
+     * @throws \Exception
      */
-    public function send($message = null, \Closure $send = null)
+    public function send($message = null, array $transport = [], \Closure $send = null)
     {
         try {
             // 匿名函数
             if ($message instanceof \Closure) {
                 call_user_func_array($message, [&$this, &$this->message]);
             }
-            $transportInstance = new Transport();
-            $transportDriver   = $transportInstance->getTransport();
+            if ($transport instanceof TransportInterface) {
+                $transportDriver = $transport;
+            } else {
+                $transportInstance = new Transport();
+                $transportInstance->setTransport($transport);
+                $transportDriver = $transportInstance->getSymfonyMailer();
+            }
 
             $mailer = new \Symfony\Component\Mailer\Mailer($transportDriver);
 
-            // debug模式记录日志
             if (Config::get('debug')) {
                 Log::write(var_export($this->getHeadersString(), true), Log::INFO);
             }
@@ -346,26 +525,30 @@ class Mailer
             } else {
                 $mailer->send($this->message);
             }
+            return true;
         } catch (TransportExceptionInterface $e) {
             $this->err_msg = $e->getMessage();
+            Log::write($e->getMessage(), Log::ERROR);
             if (Config::get('debug')) {
-                // 将错误信息记录在日志中
-                $log = "Error: " . $e->getMessage() . "\n"
-                    . '邮件头信息：' . "\n"
-                    . var_export($this->getHeadersString(), true);
-                Log::write($log, Log::ERROR);
+                // 调试模式直接抛出异常
+                throw new Exception($e->getMessage());
             }
-            throw new Exception($e->getMessage());
-        } catch (\Exception $e) {
+            return false;
+        } catch (Exception $e) {
             $this->err_msg = $e->getMessage();
-            throw new Exception($e->getMessage());
+            if (Config::get('debug')) {
+                // 调试模式直接抛出异常
+                throw new Exception($e->getMessage());
+            }
+            return false;
         }
     }
+
 
     /**
      * 获取错误信息
      *
-     * @return mixed
+     * @return string|null
      */
     public function getError()
     {
@@ -381,7 +564,7 @@ class Mailer
      */
     protected function embedImage(string &$k, string &$v, array &$param)
     {
-        $flag = Config::get('embed', 'embed:');
+        $flag = Config::get('cid', 'cid:');
         if (false !== strpos($k, $flag)) {
             if (is_array($v) && $v) {
                 if (!isset($v[1])) {

@@ -1,10 +1,10 @@
 <?php
 /**
- * think-mail [A powerful and beautiful php mailer for All of ThinkPHP and Other PHP Framework based SwiftMailer]
+ * think-mail [A powerful and beautiful php mailer for All of ThinkPHP and Other PHP Framework based Symfony Mailer]
  *
  * @author    yzh52521
  * @link      https://github.com/yzh52521/think-mail
- * @copyright 2019 yzh52521 all rights reserved.
+ * @copyright 2022 yzh52521 all rights reserved.
  * @license   http://www.apache.org/licenses/LICENSE-2.0
  */
 
@@ -15,7 +15,7 @@ use think\facade\Config as ThinkConfig;
 
 /**
  * Class Mailer
- * @package mailer\tp6
+ * @package mailer\think6
  */
 class Mailer extends \mailer\lib\Mailer
 {
@@ -28,7 +28,7 @@ class Mailer extends \mailer\lib\Mailer
      *
      * @return Mailer
      */
-    public function view(string $template, array $param = [], array $config = [])
+    public function view(string $template, array $param = [], array $config = []): Mailer
     {
         $view = View::instance(ThinkConfig::get('view'), ThinkConfig::get('tpl_replace_string'));
         // 处理变量中包含有对元数据嵌入的变量

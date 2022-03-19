@@ -1,10 +1,11 @@
 <?php
 /**
- * think-mail [A powerful and beautiful php mailer for All of ThinkPHP and Other PHP Framework based SwiftMailer]
+ *
+ * think-mail [A powerful and beautiful php mailer for All of ThinkPHP and Other PHP Framework based Symfony Mailer]
  *
  * @author    yzh52521
  * @link      https://github.com/yzh52521/think-mail
- * @copyright 2019 yzh52521 all rights reserved.
+ * @copyright 2022 yzh52521 all rights reserved.
  * @license   http://www.apache.org/licenses/LICENSE-2.0
  */
 
@@ -20,18 +21,18 @@ class Config
     /**
      * @var array 配置项
      */
-    private static $config = [];
+    private static array $config = [];
     /**
      * @var bool 是否初始化
      */
-    private static $isInit = false;
+    private static bool $isInit = false;
 
     /**
      * 初始化配置项
      *
      * @param array $config
      */
-    public static function init($config = [])
+    public static function init(array $config = [])
     {
         if ($config) {
             self::$config = array_merge(self::$config, $config);

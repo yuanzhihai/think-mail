@@ -1,17 +1,16 @@
 <?php
 
 /**
- * 示例配置文件
- *
+ * 配置文件
  */
 return [
     'scheme'          => 'smtp',
-    'host'            => 'smtp.163.com', // 服务器地址
-    'username'        => 'yzh52521@163.com',
-    'password'        => 'QTLEMWLYSLSAOFKI', // 密码
+    'host'            => '', // 服务器地址
+    'username'        => '',
+    'password'        => '', // 密码
     'port'            => 465, // SMTP服务器端口号,一般为25
     'options'         => [],
-    'dsn'             => 'smtp://yzh52521@163.com:QTLEMWLYSLSAOFKI@smtp.163.com:465',
+    'dsn'             => '',
     'debug'           => false, // 开启debug模式会直接抛出异常, 记录邮件发送日志
     'left_delimiter'  => '{', // 模板变量替换左定界符, 可选, 默认为 {
     'right_delimiter' => '}', // 模板变量替换右定界符, 可选, 默认为 }

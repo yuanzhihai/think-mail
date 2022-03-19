@@ -13,28 +13,18 @@ use mailer\think\Mailer;
 
 $mailer = Mailer::instance();
 $mailer->from('10086@qq.com@qq.com')
-    ->to('your-mail@domain.com')
-    ->subject('纯文本测试')
-    ->text('欢迎您使用think-mail')
-    ->send();
+      ->to('your-mail@domain.com')
+      ->subject('纯文本测试')
+      ->text('欢迎您使用think-mail')
+      ->send();
 
 
 ## 安装
-### 使用 Composer 安装 (强烈推荐):
-支持 `psr-4` 规范, 开箱即用
 ```
-composer require yzh52521/think-mail 
-```
+composer require yzh52521/think-mail
 
-### github下载 或 直接手动下载源码:
-需手动引入自动载入文件
-
-#### 下载文件:
-git clone https://github.com/yzh52521/think-mail think-mail
-
-```
 ## 配置
-在配置文件里配置如下信息, 可以配置在 `mail.php` 或 `config.php` 文件中, 但要保证能通过 `mail.driver`, `mail.host` 访问到配置信息, 内容如下:
+在配置文件里配置如下信息, 可以配置在 `mail.php` 或 `config.php` 文件中, 但要保证能通过 `mail.drive`, `mail.host` 访问到配置信息, 内容如下:
 ```
 return [
         'scheme'          => 'smtp',
@@ -51,14 +41,14 @@ return [
         'log_path'        => '', // 日志路径, 可选, 不配置日志驱动时启用默认日志驱动, 默认路径是 /path/to/tp-mailer/log, 要保证该目录有可写权限, 最好配置自己的日志路径
         'embed'           => 'embed:', // 邮件中嵌入图片元数据标记
 ];
-```
-```
+
+
 public static function write($content, $level = 'debug')
 {
     echo '日志内容：' . $content;
     echo '日志级别：' . $level;
 }
-```
+
 
 #### log_path
 日志驱动为默认是日志存储路径，不配置默认为 `think-mail/log/`，例如可配置为 `ROOT_PATH . 'runtime/log/'`
@@ -118,11 +108,6 @@ $mailer->html('<p>欢迎使用{name}</p>', ['name' => 'think-mailer']);
 $mailer->text('欢迎使用think-mailer');
 ```
 
-还有另外一个用法完全相同的同名方法
-```
-$mailer->raw('欢迎使用think-mailer');
-```
-
 或者使用变量替换纯文本内容
 ```
 $mailer->text('欢迎使用{name}', ['name' => 'think-mailer']);
@@ -136,12 +121,12 @@ $mailer->view('admin@mail/register', ['account' => $account, 'name' => $name]);
 ```
 
 ### 将图片作为元数据嵌入到邮件中
-邮件内容中包含图片的, 可以直接指定 `img` 标签的 `src` 属性为远程图片地址, 此处图片地址必须为远程图片地址, 必须为一个带域名的完整图片链接, 这似乎很麻烦, 所以你还可以将图片作为元数据嵌入到邮件中, 至于其他文件是否也可以嵌入请自己尝试, 详情请参考 [SwiftMailer Embedding Inline Media Files](http://swiftmailer.org/docs/messages.html#embedding-inline-media-files)
+邮件内容中包含图片的, 可以直接指定 `img` 标签的 `src` 属性为远程图片地址, 此处图片地址必须为远程图片地址, 必须为一个带域名的完整图片链接, 这似乎很麻烦, 所以你还可以将图片作为元数据嵌入到邮件中, 至于其他文件是否也可以嵌入请自己尝试
 
-下面介绍一下 `think-mailer` 如何快速简便的将图片元数据嵌入到邮件中:
+下面介绍一下 `think-mail` 如何快速简便的将图片元数据嵌入到邮件中:
 
 #### 配置嵌入标签
-嵌入元数据需要在模板赋值或者使用 `html()` 传递变量时, 给变量添加特殊的标签, 该嵌入标签默认为 `embed:`, 你可以修改配置文件中 `embed` 项, 修改为你想要的形式
+嵌入元数据需要在模板赋值或者使用 `html()` 传递变量时, 给变量添加特殊的标签, 该嵌入标签默认为 `cid:`, 你可以修改配置文件中 `cid` 项, 修改为你想要的形式
 
 #### 模板或HTML中设置变量
 在模板中, 例如 ThinkPHP 全系列都是使用 `{$var}` 的形式传递变量, 假设变量为 `image_src`, 那么模板中填写 `{$image_src}`, 如果是在HTML中, 请使用 `{image_src}`, 注意如果修改过左、右定界符请使用自己定义的左右定界符
@@ -162,9 +147,9 @@ Mailer::instance()
     ->view('index@mail/index', [
         'date' => date('Y-m-d H:i:s'),     
         'embed:image' => ROOT_PATH . 'image.jpg',
-        // 'embed:image' => 'http://image34.360doc.com/DownloadImg/2011/08/2222/16275597_64.jpg',
-        // 'embed:image' => [file_get_contents(ROOT_PATH . 'image1.jpg')],
-        // 'embed:image' => [file_get_contents(ROOT_PATH . 'image1.jpg', 'image/png', '图片.png')],
+        // 'cid:image' => 'http://image34.360doc.com/DownloadImg/2011/08/2222/16275597_64.jpg',
+        // 'cid:image' => [file_get_contents(ROOT_PATH . 'image1.jpg')],
+        // 'cid:image' => [file_get_contents(ROOT_PATH . 'image1.jpg', 'image/png', '图片.png')],
      ])
     ->send();
 ```
@@ -193,10 +178,10 @@ Mailer::instance()
     ->to('10086@qq.com') 
     ->subject('测试邮件模板中嵌入图片元数据')
     ->html('<img src="{image}" />图片测试', [
-        'embed:image' => ROOT_PATH . 'image.jpg',
-        // 'embed:image' => 'http://image34.360doc.com/DownloadImg/2011/08/2222/16275597_64.jpg',
-        // 'embed:image' => [file_get_contents(ROOT_PATH . 'image1.jpg')],
-        // 'embed:image' => [file_get_contents(ROOT_PATH . 'image1.jpg', 'image/png', '图片.png')],
+        'cid:image' => ROOT_PATH . 'image.jpg',
+        // 'cid:image' => 'http://image34.360doc.com/DownloadImg/2011/08/2222/16275597_64.jpg',
+        // 'cid:image' => [file_get_contents(ROOT_PATH . 'image1.jpg')],
+        // 'cid:image' => [file_get_contents(ROOT_PATH . 'image1.jpg', 'image/png', '图片.png')],
      ])
     ->send();
 ```
@@ -204,12 +189,12 @@ Mailer::instance()
 
 ### 添加附件
 ```
-$mailer->attach('http://domain.com/path/to/file.ext');
+$mailer->attach('http://domain.com/path/to/file.jpg');
 ```
 
 或者指定附件的文件名
 ```
-$mailer->attach(ROOT_PATH . 'foo.ext', '文件名.pdf');
+$mailer->attach(ROOT_PATH . 'foo.jpg', ['name'=>文件名.jpg','contentType'=>'image/jpeg']);
 ```
 
 ### 设置字符编码
@@ -219,13 +204,13 @@ $mailer->charset('utf8');
 
 ### 设置邮件优先级
 ```
-$mailer->priority(\Symfony\Component\Mime\Email::PRIORITY_HIGHEST);
+$mailer->priority(1);
 // 可选值有: 
-// \Symfony\Component\Mime\Email::PRIORITY_HIGHEST
-// \Symfony\Component\Mime\Email::PRIORITY_HIGH
-// \Symfony\Component\Mime\Email::PRIORITY_NORMAL
-// \Symfony\Component\Mime\Email::PRIORITY_LOW
-// \Symfony\Component\Mime\Email::PRIORITY_LOWEST
+// 1 Highest
+// 2 High
+// 3 Normal
+// 4 Low
+// 5 Lowest
 ```
 
 ### 发送邮件
