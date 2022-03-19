@@ -52,7 +52,7 @@ return [
         'embed'           => 'embed:', // 邮件中嵌入图片元数据标记
 ];
 ```
-
+```
 public static function write($content, $level = 'debug')
 {
     echo '日志内容：' . $content;
