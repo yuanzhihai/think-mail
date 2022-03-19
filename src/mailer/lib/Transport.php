@@ -38,6 +38,7 @@ class Transport
 
     private function createTransport(array $config = []): TransportInterface
     {
+        $config           = array_merge(Config::get(), $config);
         $defaultFactories = \Symfony\Component\Mailer\Transport::getDefaultFactories(null, null, null);
         $transportObj     = new \Symfony\Component\Mailer\Transport($defaultFactories);
 
