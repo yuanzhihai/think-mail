@@ -8,7 +8,7 @@
  * @license   http://www.apache.org/licenses/LICENSE-2.0
  */
 
-namespace mailer\lib;
+namespace mailer;
 
 use Symfony\Component\Mailer\Mailer as SymfonyMailer;
 use Symfony\Component\Mailer\Transport\Dsn;

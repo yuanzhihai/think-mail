@@ -8,9 +8,9 @@
  * @license   http://www.apache.org/licenses/LICENSE-2.0
  */
 
-namespace mailer\lib\log;
+namespace mailer\log;
 
-use mailer\lib\Config;
+use mailer\Config;
 
 class File
 {

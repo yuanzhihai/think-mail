@@ -8,7 +8,7 @@
  * @license   http://www.apache.org/licenses/LICENSE-2.0
  */
 
-namespace mailer\lib;
+namespace mailer;
 
 /**
  * Class Log
@@ -33,7 +33,7 @@ class Log
                 $driver       = Config::get('log_drive');
                 self::$driver = $driver;
             } else {
-                self::$driver = \mailer\lib\log\File::class;
+                self::$driver = \mailer\log\File::class;
             }
         }
     }

@@ -8,13 +8,13 @@
  * @license   http://www.apache.org/licenses/LICENSE-2.0
  */
 
-namespace mailer\lib;
+namespace mailer;
 
 /**
- * Class BadMethodCallException
+ * Class Exception
  * @package mailer\lib
  */
-class BadMethodCallException extends \BadMethodCallException
+class Exception extends \Exception
 {
 
 }

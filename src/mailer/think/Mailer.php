@@ -17,7 +17,7 @@ use think\facade\Config as ThinkConfig;
  * Class Mailer
  * @package mailer\think6
  */
-class Mailer extends \mailer\lib\Mailer
+class Mailer extends \mailer\Mailer
 {
     /**
      * 载入一个模板作为邮件内容

@@ -8,7 +8,7 @@
  * @license   http://www.apache.org/licenses/LICENSE-2.0
  */
 
-namespace mailer\lib;
+namespace mailer;
 
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -20,7 +20,7 @@ use Symfony\Component\Mime\Header\HeaderInterface;
 
 /**
  * Class Mailer
- * @package mailer\lib
+ * @package mailer
  * @method Mailer view(string $template, array $param = [], array $config = [])
  */
 class Mailer
@@ -564,7 +564,7 @@ class Mailer
      */
     protected function embedImage(string &$k, string &$v, array &$param)
     {
-        $flag = Config::get('cid', 'cid:');
+        $flag = Config::get('embed', 'cid:');
         if (false !== strpos($k, $flag)) {
             if (is_array($v) && $v) {
                 if (!isset($v[1])) {
