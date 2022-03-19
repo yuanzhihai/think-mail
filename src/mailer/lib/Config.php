@@ -45,12 +45,12 @@ class Config
     /**
      * 获取配置参数 为空则获取所有配置
      *
-     * @param string $name 配置参数名
+     * @param string|null $name 配置参数名
      * @param mixed $default 默认值
      *
      * @return mixed
      */
-    public static function get($name = null, $default = null)
+    public static function get(string $name = null, $default = null)
     {
         self::init();
         if (empty($name)) {
@@ -71,7 +71,6 @@ class Config
     public static function set($name, $value)
     {
         self::init();
-
         self::$config[$name] = $value;
     }
 
@@ -81,14 +80,7 @@ class Config
     private static function detect()
     {
         if (class_exists('\\think\\facade\\Config')) {
-            if (strpos(\think\App::VERSION, '6.0') !== false) {
-                self::$config = \think\facade\Config::get('mail');
-            } else {
-                self::$config = \think\facade\Config::get('mail.');
-            }
-        } elseif (class_exists('\\think\\Config')) {
-            // thinkphp5自动探测初始化配置项
-            self::$config = \think\Config::get('mail');
+            self::$config = \think\facade\Config::get('mail');
         } else {
             // 其他框架如果未初始化则抛出异常
             throw new InvalidArgumentException('未初始化配置项，请使用 mail\\lib\\Config::init()初始化配置项');

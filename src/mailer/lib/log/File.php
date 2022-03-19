@@ -7,14 +7,16 @@
  * @copyright 2019 yzh52521 all rights reserved.
  * @license   http://www.apache.org/licenses/LICENSE-2.0
  */
+
 namespace mailer\lib\log;
 
 use mailer\lib\Config;
 
 class File
 {
-    const DEBUG = 'debug';
-    const INFO = 'info';
+    const DEBUG = 'DEBUG';
+    const INFO = 'INFO';
+    const ERROR = 'ERROR';
 
     /**
      * 写入日志
@@ -22,12 +24,12 @@ class File
      * @param $content
      * @param string $level
      */
-    public static function write($content, $level = self::DEBUG)
+    public static function write($content, string $level = self::DEBUG)
     {
         $now  = date(' c ');
         $path = Config::get('log_path');
         if (empty($path)) {
-            $path =  './runtime/log/think-mail' . DIRECTORY_SEPARATOR;
+            $path = './runtime/log/think-mail' . DIRECTORY_SEPARATOR;
         }
         $destination = $path . '/mailer-' . date('Y-m-d') . '.log';
         // 自动创建日志目录

@@ -29,8 +29,8 @@ class Log
     public static function init()
     {
         if (null === self::$driver) {
-            if (Config::get('log_driver')) {
-                $driver = Config::get('log_driver');
+            if (Config::get('log_drive')) {
+                $driver       = Config::get('log_drive');
                 self::$driver = $driver;
             } else {
                 self::$driver = \mailer\lib\log\File::class;
@@ -40,15 +40,14 @@ class Log
 
     /**
      * 写入日志
-     *
-     * @param        $content
+     * @param $message
      * @param string $level
+     * @param array $context
      */
-    public static function write($content, $level = self::DEBUG)
+    public static function write($message, string $level = self::DEBUG, array $context = [])
     {
         self::init();
-
         $driver = self::$driver;
-        $driver::write($content, $level);
+        $driver::write($message, $level, $context);
     }
 }
