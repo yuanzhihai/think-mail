@@ -32,14 +32,7 @@ composer require yzh52521/think-mail
 #### 下载文件:
 git clone https://github.com/yzh52521/think-mail think-mail
 
-#### 移动文件夹:
-然后将两个项目分别手动命名为 `think-mail` 和 `swiftmailer`, 放在自己项目的扩展类库文件夹里, 这两个文件夹必须在同一目录, 目录结构大概如下所示:
 ```
-扩展目录
-├── think-mail
-│   └── src
-```
-
 ## 配置
 在配置文件里配置如下信息, 可以配置在 `mail.php` 或 `config.php` 文件中, 但要保证能通过 `mail.driver`, `mail.host` 访问到配置信息, 内容如下:
 ```
