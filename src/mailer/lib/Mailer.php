@@ -333,19 +333,16 @@ class Mailer
      * @return false
      * @throws Exception
      */
-    public function send($message = null, $transport = null, \Closure $send = null)
+    public function send($message = null, \Closure $send = null)
     {
         try {
             // 匿名函数
             if ($message instanceof \Closure) {
-                call_user_func_array($message, [& $this, & $this->message]);
+                call_user_func_array($message, [&$this, &$this->message]);
             }
-            if (is_object($transport)) {
-                $transportDriver = $transport;
-            } else {
-                $transportInstance = new Transport();
-                $transportDriver   = $transportInstance->instance();
-            }
+            $transportInstance = new Transport();
+            $transportDriver   = $transportInstance->getTransport();
+
             $mailer = new \Symfony\Component\Mailer\Mailer($transportDriver);
 
             // debug模式记录日志
