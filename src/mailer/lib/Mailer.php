@@ -32,10 +32,6 @@ class Mailer
      */
     protected Email $message;
 
-    /**
-     * @var string|null 错误信息
-     */
-    protected $err_msg;
 
     protected $transport;
 
@@ -43,23 +39,17 @@ class Mailer
      *
      * @return Mailer
      */
-    public static function instance($transport = null)
+    public static function instance()
     {
         if (null === self::$instance) {
-            self::$instance = new static($transport);
+            self::$instance = new static();
         }
         return self::$instance;
     }
 
 
-    /**
-     * Mailer constructor.
-     *
-     * @param mixed $transport
-     */
-    public function __construct($transport = null)
+    public function __construct()
     {
-        $this->transport = $transport;
         $this->init();
     }
 
@@ -355,17 +345,14 @@ class Mailer
                 $mailer->send($this->message);
             }
         } catch (TransportExceptionInterface $e) {
-            $this->err_msg = $e->getMessage();
-            // 将错误信息记录在日志中
-            $log = "Error: " . $this->err_msg . "\n"
-                . '邮件头信息：' . "\n"
-                . var_export($this->getHeadersString(), true);
-            Log::write($log, Log::ERROR);
-            // 异常处理
             if (Config::get('debug')) {
-                // 调试模式直接抛出异常
-                throw new Exception($e->getMessage());
+                // 将错误信息记录在日志中
+                $log = "Error: " . $e->getMessage() . "\n"
+                    . '邮件头信息：' . "\n"
+                    . var_export($this->getHeadersString(), true);
+                Log::write($log, Log::ERROR);
             }
+            throw new Exception($e->getMessage());
         } catch (\Exception $e) {
             throw new Exception($e->getMessage());
         }
@@ -447,14 +434,4 @@ class Mailer
         return $addresses;
     }
 
-
-    /**
-     * 获取错误信息
-     *
-     * @return mixed
-     */
-    public function getError()
-    {
-        return $this->err_msg;
-    }
 }
