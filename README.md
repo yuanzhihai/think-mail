@@ -194,7 +194,7 @@ $mailer->attach('http://domain.com/path/to/file.jpg');
 
 或者指定附件的文件名
 ```
-$mailer->attach(ROOT_PATH . 'foo.jpg', ['name'=>文件名.jpg','contentType'=>'image/jpeg']);
+$mailer->attach(ROOT_PATH . 'foo.jpg', ['fileName'=>文件名.jpg','contentType'=>'image/jpeg']);
 ```
 
 ### 设置字符编码
@@ -250,7 +250,7 @@ $mailer->getError();
 
 
 ## 动态配置
-`mailer/lib/Config` 可以进行邮件动态配置，可以读取配置或者重新设置默认配置项，也可以用于其他非 ThinkPHP 框架进行配置项初始化
+`mailer/Config` 可以进行邮件动态配置，可以读取配置或者重新设置默认配置项，也可以用于其他非 ThinkPHP 框架进行配置项初始化
 ```
 class Config
 {
@@ -304,7 +304,7 @@ Config::init($config);
 ```
 
 ### 第二步: 实现 `$mailer->view()` 方法
-写自己的类继承 `mailer\lib\Mailer`  然后实现里面的 `view` 方法, 根据自己的框架渲染出自己的模板，如果不需要使用 `view()` 方法可以忽略这一步，直接进入下一步:
+写自己的类继承 `mailer\Mailer`  然后实现里面的 `view` 方法, 根据自己的框架渲染出自己的模板，如果不需要使用 `view()` 方法可以忽略这一步，直接进入下一步:
 ```
 /**
  * 载入一个模板作为邮件内容
