@@ -34,9 +34,6 @@
             "config": {
                 "mailer": "src/config/config.php"
             }
-        },
-        "think-config": {
-            "mailer": "src/config/config.php"
         }
     }
 }
