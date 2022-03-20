@@ -12,6 +12,7 @@ namespace mailer;
 
 use DateTimeImmutable;
 use DateTimeInterface;
+use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\Transport\TransportInterface;
 use Symfony\Component\Mime\Address;
@@ -117,6 +118,9 @@ class Mailer
     }
 
 
+    /**
+     * @return DateTimeImmutable|null
+     */
     public function getDate(): ?DateTimeImmutable
     {
         return $this->message->getDate();
@@ -137,11 +141,11 @@ class Mailer
     /**
      * 设置发件人
      *
-     * @param Address|string $address
+     * @param array|string $address
      *
      * @return $this
      */
-    public function from($address): self
+    public function from(array|string $address): self
     {
         $this->message->from(...$this->convertStringsToAddresses($address));
 
@@ -150,9 +154,9 @@ class Mailer
 
     /**
      * 获取发件人
-     * @return string|string[]
+     * @return array|string
      */
-    public function getFrom()
+    public function getFrom(): array|string
     {
         return $this->convertAddressesToStrings($this->message->getFrom());
     }
@@ -160,11 +164,11 @@ class Mailer
     /**
      * 设置收件人
      *
-     * @param Address|string $address
+     * @param array|string $address
      *
      * @return $this
      */
-    public function to($address): self
+    public function to(array|string $address): self
     {
         $this->message->to(...$this->convertStringsToAddresses($address));
 
@@ -172,19 +176,19 @@ class Mailer
     }
 
     /** 获取收件人
-     * @return string|string[]
+     * @return string|array
      */
-    public function getTo()
+    public function getTo(): array|string
     {
         return $this->convertAddressesToStrings($this->message->getTo());
     }
 
     /**
      * 设置抄送人
-     * @param Address|string $address
+     * @param array|string $address
      * @return $this
      */
-    public function cc($address): self
+    public function cc(array|string $address): self
     {
         $this->message->cc(...$this->convertStringsToAddresses($address));
 
@@ -193,19 +197,19 @@ class Mailer
 
     /**
      * 获取抄送人
-     * @return string|string[]
+     * @return string|array
      */
-    public function getCc()
+    public function getCc(): array|string
     {
         return $this->convertAddressesToStrings($this->message->getCc());
     }
 
     /**
      * 设置暗抄人
-     * @param Address|string $address
+     * @param array|string $address
      * @return $this
      */
-    public function bcc($address): self
+    public function bcc(array|string $address): self
     {
         $this->message->bcc(...$this->convertStringsToAddresses($address));
 
@@ -214,9 +218,9 @@ class Mailer
 
     /**
      * 获取暗抄人
-     * @return string|string[]
+     * @return array|string
      */
-    public function getBcc()
+    public function getBcc(): array|string
     {
         return $this->convertAddressesToStrings($this->message->getBcc());
     }
@@ -225,6 +229,7 @@ class Mailer
      * 获取邮件HTML内容
      * @return string
      */
+    #[Pure]
     public function getHtmlBody(): string
     {
         return (string)$this->message->getHtmlBody();
@@ -278,8 +283,9 @@ class Mailer
     /**
      * 设置邮件内容为HTML内容
      *
-     * @param resource|string|null $content
-     *
+     * @param string $content
+     * @param $param
+     * @param $config
      * @return $this
      */
     public function html(string $content, $param, $config): self
@@ -292,6 +298,10 @@ class Mailer
         return $this;
     }
 
+    /**
+     * @return string
+     */
+    #[Pure]
     public function getTextBody(): string
     {
         return (string)$this->message->getTextBody();
@@ -389,17 +399,17 @@ class Mailer
 
     /**
      * 设置回复邮件
-     * @param Address|string $address
+     * @param array|string $address
      * @return $this
      */
-    public function replyTo($address): self
+    public function replyTo(array|string $address): self
     {
         $this->message->replyTo($address);
 
         return $this;
     }
 
-    public function getReplyTo()
+    public function getReplyTo(): array|string
     {
         return $this->convertAddressesToStrings($this->message->getReplyTo());
     }
@@ -474,8 +484,7 @@ class Mailer
      *
      * @param array $param
      * @param array $config
-     *
-     * @return mixed
+     * @return array
      */
     protected function parseParam(array $param, array $config = [])
     {
@@ -499,7 +508,7 @@ class Mailer
      * @return bool
      * @throws \Exception
      */
-    public function send($message = null, array $transport = [], \Closure $send = null)
+    public function send($message = null, array $transport = [], \Closure $send = null): bool
     {
         try {
             // 匿名函数
@@ -548,7 +557,7 @@ class Mailer
      *
      * @return string|null
      */
-    public function getError()
+    public function getError(): ?string
     {
         return $this->err_msg;
     }
@@ -587,7 +596,8 @@ class Mailer
      *
      * @return array<string, string>|string
      */
-    private function convertAddressesToStrings(array $addresses)
+    #[Pure]
+    private function convertAddressesToStrings(array $addresses): array|string
     {
         $strings = [];
 
@@ -601,11 +611,11 @@ class Mailer
     /**
      * Converts string representations of address to their instances.
      *
-     * @param array<int|string, string>|string $strings
+     * @param string|array<int|string, string> $strings
      *
      * @return Address[]
      */
-    private function convertStringsToAddresses($strings): array
+    private function convertStringsToAddresses(array|string $strings): array
     {
         if (is_string($strings)) {
             return [new Address($strings)];
