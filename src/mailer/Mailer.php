@@ -507,14 +507,12 @@ class Mailer
                 call_user_func_array($message, [&$this, &$this->message]);
             }
             if ($transport instanceof TransportInterface) {
-                $transportDriver = $transport;
+                $mailer = $transport;
             } else {
                 $transportInstance = new Transport();
                 $transportInstance->setTransport($transport);
-                $transportDriver = $transportInstance->getSymfonyMailer();
+                $mailer = $transportInstance->getSymfonyMailer();
             }
-
-            $mailer = new \Symfony\Component\Mailer\Mailer($transportDriver);
 
             if (Config::get('debug')) {
                 Log::write(var_export($this->getHeadersString(), true), Log::INFO);
