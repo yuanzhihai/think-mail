@@ -54,21 +54,24 @@ class Mailer
 
     private ?SMimeEncrypter $encryptor = null;
 
+    private mixed $transport;
+
     /**
      *
      * @return Mailer
      */
-    public static function instance()
+    public static function instance($transport = [])
     {
         if (null === self::$instance) {
-            self::$instance = new static();
+            self::$instance = new static($transport);
         }
         return self::$instance;
     }
 
 
-    public function __construct()
+    public function __construct($transport = [])
     {
+        $this->transport = $transport;
         $this->init();
     }
 
@@ -582,18 +585,23 @@ class Mailer
     /**
      * 发送邮件
      * @param null $message
-     * @param array $transport
+     * @param array|null $transport
      * @param \Closure|null $send
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
-    public function send($message = null, array $transport = [], \Closure $send = null): bool
+    public function send($message = null, array $transport = null, \Closure $send = null): bool
     {
         try {
             // 匿名函数
             if ($message instanceof \Closure) {
                 call_user_func_array($message, [&$this, &$this->message]);
             }
+
+            if (null === $transport && $this->transport) {
+                $transport = $this->transport;
+            }
+
             if ($transport instanceof TransportInterface) {
                 $mailer = $transport;
             } else {
