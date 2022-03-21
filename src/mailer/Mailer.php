@@ -673,13 +673,13 @@ class Mailer
                     $v[2] = 'image/jpeg';
                 }
                 [$img, $name, $mime] = $v;
-                $this->message->embedFromPath($img, $name, $mime);
+                $this->message->embed($img, $name, $mime);
             } else {
                 $this->message->embedFromPath($v, $name);
             }
             unset($param[$k]);
             $k         = substr($k, strlen($flag));
-            $param[$k] = $flag.$name;
+            $param[$k] = $flag . $name;
         }
     }
 

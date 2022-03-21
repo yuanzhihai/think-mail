@@ -136,7 +136,7 @@ $mailer->view('admin@mail/register', ['account' => $account, 'name' => $name]);
 
 第一, 如果值为字符串, 则该值为图片的路径 (绝对路径或相对路径) 或者 有效的url地址;
 
-第二, 如果值为数组, 数组为 `['stream','name','mime',]` 的形式, 其中 `stream` 表示图片的数据流, 即是未保存的文件数据流, 例如 `file_get_contents()` 方法获取的文件数据流, 第二个参数为文件名, 默认为 `image.jpg`,第二个参数可选, 为文件的mime类型, 默认为 `image/jpeg`
+第二, 如果值为数组, 数组为 `['stream','name','mime',]` 的形式, 其中 `stream` 表示图片的数据流, 即是未保存的文件数据流, 例如 `fopen()` 方法获取的文件数据流, 第二个参数为文件名, 默认为 `image`,第二个参数可选, 为文件的mime类型, 默认为 `image/jpeg`
 
 #### 示例
 ```
@@ -148,8 +148,8 @@ Mailer::instance()
         'date' => date('Y-m-d H:i:s'),     
         'cid:image' => ROOT_PATH . 'image.jpg',
         // 'cid:image' => 'https://image34.360doc.com/DownloadImg/2011/08/2222/16275597_64.jpg',
-        // 'cid:image' => ['/path/image1.jpg'],
-        // 'cid:image' => ['/path/image1.jpg', 'image','image/jpg'],
+        // 'cid:image' => [fopen('/path/image1.jpg','r')],
+        // 'cid:image' => [fopen('/path/image1.jpg','r'), 'image','image/jpg'],
      ])
     ->send();
 ```
@@ -180,8 +180,8 @@ Mailer::instance()
     ->html('<img src="{image}" />图片测试', [
         'cid:image' => '/path/to/image.jpg',
         // 'cid:image' => 'https://image34.360doc.com/DownloadImg/2011/08/2222/16275597_64.jpg',
-        // 'cid:image' => ['/path/to/image1.jpg'],
-        // 'cid:image' => ['/path/to/image1.jpg', 'image','image/jpg'],
+        // 'cid:image' => [fopen('/path/to/image1.jpg','r')],
+        // 'cid:image' => [fopen('/path/to/image1.jpg','r'), 'image','image/jpg'],
      ])
     ->send();
 ```
