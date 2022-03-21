@@ -200,6 +200,23 @@ $mailer->attach('/path/to/file.jpg', ['fileName'=>文件名.jpg','contentType'=>
 $mailer->attachContent(fopen('/path/to/file.jpg','r'),['fileName'=>文件名.jpg','contentType'=>'image/jpeg']);
 ```
 
+###设置消息加密/签名
+```
+消息加密
+$encryptor=new SMimeEncrypter('/path/to/certificate.crt');
+$mailer->withEncryptor($encryptor);  @see https://symfony.com/doc/current/mailer.html#encrypting-messages
+
+签名
+
+$signer = new DkimSigner('file:///path/to/private-key.key', 'example.com', 'sf');
+or
+$signer = new SMimeSigner('/path/to/certificate.crt', '/path/to/certificate-private-key.key');
+
+
+$mailer->withSigner($signer); @see https://symfony.com/doc/current/mailer.html#signing-messages
+
+```
+
 ### 设置字符编码
 ```
 $mailer->charset('utf8');
