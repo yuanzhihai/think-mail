@@ -14,7 +14,7 @@ namespace mailer;
 
 /**
  * Class Config
- * @package mailer\lib
+ * @package mailer
  */
 class Config
 {

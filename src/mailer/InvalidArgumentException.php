@@ -12,7 +12,7 @@ namespace mailer;
 
 /**
  * Class InvalidArgumentException
- * @package mailer\lib
+ * @package mailer
  */
 class InvalidArgumentException extends \InvalidArgumentException
 {

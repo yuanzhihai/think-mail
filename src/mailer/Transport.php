@@ -16,7 +16,7 @@ use Symfony\Component\Mailer\Transport\TransportInterface;
 
 /**
  * Class Transport
- * @package mailer\lib
+ * @package mailer
  */
 class Transport
 {

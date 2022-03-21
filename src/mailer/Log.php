@@ -12,7 +12,7 @@ namespace mailer;
 
 /**
  * Class Log
- * @package mailer\lib
+ * @package mailer
  */
 class Log
 {

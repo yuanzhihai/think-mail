@@ -12,7 +12,7 @@ namespace mailer;
 
 /**
  * Class Exception
- * @package mailer\lib
+ * @package mailer
  */
 class Exception extends \Exception
 {
