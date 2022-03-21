@@ -584,12 +584,12 @@ class Mailer
 
     /**
      * 发送邮件
-     * @param null $message
+     * @param \Closure|null $message
      * @param array $transport
      * @return bool
      * @throws \Exception
      */
-    public function send($message = null, array $transport = []): bool
+    public function send(\Closure $message = null, array $transport = []): bool
     {
         try {
             // 匿名函数
@@ -621,11 +621,8 @@ class Mailer
             }
 
             // 发送邮件
-            if ($send instanceof \Closure) {
-                call_user_func_array($send, [$mailer, $this]);
-            } else {
-                $mailer->send($message);
-            }
+            $mailer->send($message);
+
             return true;
         } catch (TransportExceptionInterface $e) {
             $this->err_msg = $e->getMessage();
