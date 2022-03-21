@@ -657,26 +657,29 @@ class Mailer
      * 对嵌入元数据的变量进行处理
      *
      * @param string $k
-     * @param string $v
+     * @param array|string $v
      * @param array $param
      */
-    protected function embedImage(string &$k, string &$v, array &$param)
+    protected function embedImage(string &$k, array|string &$v, array &$param)
     {
         $flag = Config::get('embed', 'cid:');
         if (str_contains($k, $flag)) {
+            $name = 'image';
             if (is_array($v) && $v) {
                 if (!isset($v[1])) {
-                    $v[1] = 'image.jpg';
+                    $v[1] = $name;
                 }
                 if (!isset($v[2])) {
                     $v[2] = 'image/jpeg';
                 }
-                [$imgData, $name, $mime] = $v;
-                $v = $this->message->embedFromPath($imgData, $name, $mime);
+                [$img, $name, $mime] = $v;
+                $this->message->embedFromPath($img, $name, $mime);
+            } else {
+                $this->message->embedFromPath($v, $name);
             }
             unset($param[$k]);
             $k         = substr($k, strlen($flag));
-            $param[$k] = $v;
+            $param[$k] = $flag.$name;
         }
     }
 
