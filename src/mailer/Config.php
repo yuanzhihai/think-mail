@@ -47,11 +47,10 @@ class Config
      * 获取配置参数 为空则获取所有配置
      *
      * @param string|null $name 配置参数名
-     * @param mixed $default 默认值
-     *
-     * @return mixed
+     * @param mixed|null $default 默认值
+     * @return array|mixed|null
      */
-    public static function get(string $name = null, $default = null)
+    public static function get(string $name = null, mixed $default = null)
     {
         self::init();
         if (empty($name)) {
@@ -66,10 +65,10 @@ class Config
     /**
      * 设置配置参数
      *
-     * @param string|array $name 配置参数名
+     * @param array|string $name 配置参数名
      * @param mixed $value 配置值
      */
-    public static function set($name, $value)
+    public static function set(array|string $name, $value)
     {
         self::init();
         self::$config[$name] = $value;
@@ -84,7 +83,7 @@ class Config
             self::$config = \think\facade\Config::get('mailer');
         } else {
             // 其他框架如果未初始化则抛出异常
-            throw new InvalidArgumentException('未初始化配置项，请使用 mail\\lib\\Config::init()初始化配置项');
+            throw new InvalidArgumentException('未初始化配置项，请使用 mail\\Config::init()初始化配置项');
         }
     }
 }
