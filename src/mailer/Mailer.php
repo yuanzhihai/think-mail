@@ -585,12 +585,12 @@ class Mailer
     /**
      * 发送邮件
      * @param null $message
-     * @param array|null $transport
+     * @param array|object $transport
      * @param \Closure|null $send
      * @return bool
      * @throws Exception
      */
-    public function send($message = null, array $transport = null, \Closure $send = null): bool
+    public function send($message = null, array $transport = [], \Closure $send = null): bool
     {
         try {
             // 匿名函数
@@ -598,7 +598,7 @@ class Mailer
                 call_user_func_array($message, [&$this, &$this->message]);
             }
 
-            if (null === $transport && $this->transport) {
+            if (empty($transport) && $this->transport) {
                 $transport = $this->transport;
             }
 
