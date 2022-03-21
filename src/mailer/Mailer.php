@@ -60,7 +60,7 @@ class Mailer
      *
      * @return Mailer
      */
-    public static function instance($transport=[])
+    public static function instance($transport = [])
     {
         if (null === self::$instance) {
             self::$instance = new static($transport);
@@ -69,7 +69,7 @@ class Mailer
     }
 
 
-    public function __construct($transport=[])
+    public function __construct($transport = [])
     {
         $this->transport = $transport;
         $this->init();
@@ -308,7 +308,7 @@ class Mailer
      * @param array $config
      * @return $this
      */
-    public function html(string $content, array $param=[], array $config=[]): self
+    public function html(string $content, array $param = [], array $config = []): self
     {
         if ($param) {
             $content = strtr($content, $this->parseParam($param, $config));
@@ -336,7 +336,7 @@ class Mailer
      *
      * @return $this
      */
-    public function text(string $content, array $param=[], array $config=[]): self
+    public function text(string $content, array $param = [], array $config = []): self
     {
         if ($param) {
             $content = strtr($content, $this->parseParam($param, $config));
@@ -585,12 +585,11 @@ class Mailer
     /**
      * 发送邮件
      * @param null $message
-     * @param array|object $transport
-     * @param \Closure|null $send
+     * @param array $transport
      * @return bool
      * @throws \Exception
      */
-    public function send($message = null, array $transport = [], \Closure $send = null): bool
+    public function send($message = null, array $transport = []): bool
     {
         try {
             // 匿名函数
@@ -601,14 +600,9 @@ class Mailer
             if (empty($transport) && $this->transport) {
                 $transport = $this->transport;
             }
-
-            if ($transport instanceof TransportInterface) {
-                $mailer = $transport;
-            } else {
-                $transportInstance = new Transport();
-                $transportInstance->setTransport($transport);
-                $mailer = $transportInstance->getSymfonyMailer();
-            }
+            $transportInstance = new Transport();
+            $transportInstance->setTransport($transport);
+            $mailer = $transportInstance->getSymfonyMailer();
 
             if (Config::get('debug')) {
                 Log::write(var_export($this->getHeadersString(), true), Log::INFO);
