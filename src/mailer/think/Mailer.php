@@ -35,7 +35,7 @@ class Mailer extends \mailer\Mailer
         foreach ($param as $k => $v) {
             $this->embedImage($k, $v, $param);
         }
-        $content = $view->fetch($template, $param, [], $config);
+        $content = $view->fetch($template, $param);
 
         return $this->html($content);
     }
