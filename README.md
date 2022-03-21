@@ -7,7 +7,7 @@
 
 
 ## 优雅的发送邮件
-**ThinkPHP6.0.x 示例**
+**ThinkPHP6.0 示例**
 ```
 use mailer\think\Mailer;
 
@@ -126,13 +126,13 @@ $mailer->view('admin@mail/register', ['account' => $account, 'name' => $name]);
 下面介绍一下 `think-mail` 如何快速简便的将图片元数据嵌入到邮件中:
 
 #### 配置嵌入标签
-嵌入元数据需要在模板赋值或者使用 `html()` 传递变量时, 给变量添加特殊的标签, 该嵌入标签默认为 `cid:`, 你可以修改配置文件中 `cid` 项, 修改为你想要的形式
+嵌入元数据需要在模板赋值或者使用 `html()` 传递变量时, 给变量添加特殊的标签, 该嵌入标签默认为 `embed:`, 你可以修改配置文件中 `embed` 项, 修改为你想要的形式
 
 #### 模板或HTML中设置变量
 在模板中, 例如 ThinkPHP 全系列都是使用 `{$var}` 的形式传递变量, 假设变量为 `image_src`, 那么模板中填写 `{$image_src}`, 如果是在HTML中, 请使用 `{image_src}`, 注意如果修改过左、右定界符请使用自己定义的左右定界符
 
 #### 传递变量参数和值
-在 `html()` 和 `view()` 方法的第二个参数里, 该数组必须有一个变量, 格式为 `['cid:image_src'] => '/path/to/image.jpg']` 或者 `['cid:image_src'] => ['file_stream', 'filename','filemime']]`, 即参数数组的键名是上面配置的 `嵌入标签 + 变量名`, 但值有两种情况:
+在 `html()` 和 `view()` 方法的第二个参数里, 该数组必须有一个变量, 格式为 `['embed:image_src'] => '/path/to/image.jpg']` 或者 `['embed:image_src'] => ['file_stream', 'filename','filemime']]`, 即参数数组的键名是上面配置的 `嵌入标签 + 变量名`, 但值有两种情况:
 
 第一, 如果值为字符串, 则该值为图片的路径 (绝对路径或相对路径) 或者 有效的url地址;
 
@@ -147,9 +147,9 @@ Mailer::instance()
     ->view('index@mail/index', [
         'date' => date('Y-m-d H:i:s'),     
         'embed:image' => ROOT_PATH . 'image.jpg',
-        // 'cid:image' => 'http://image34.360doc.com/DownloadImg/2011/08/2222/16275597_64.jpg',
-        // 'cid:image' => [file_get_contents(ROOT_PATH . 'image1.jpg')],
-        // 'cid:image' => [file_get_contents(ROOT_PATH . 'image1.jpg', 'image/png', '图片.png')],
+        // 'embed:image' => 'https://image34.360doc.com/DownloadImg/2011/08/2222/16275597_64.jpg',
+        // 'embed:image' => [file_get_contents('/path/to/image1.jpg')],
+        // 'embed:image' => [file_get_contents('/path/to/image1.jpg','图片.png','image/png')],
      ])
     ->send();
 ```
@@ -178,10 +178,10 @@ Mailer::instance()
     ->to('10086@qq.com') 
     ->subject('测试邮件模板中嵌入图片元数据')
     ->html('<img src="{image}" />图片测试', [
-        'cid:image' => ROOT_PATH . 'image.jpg',
-        // 'cid:image' => 'http://image34.360doc.com/DownloadImg/2011/08/2222/16275597_64.jpg',
-        // 'cid:image' => [file_get_contents(ROOT_PATH . 'image1.jpg')],
-        // 'cid:image' => [file_get_contents(ROOT_PATH . 'image1.jpg', 'image/png', '图片.png')],
+        'embed:image' => '/path/to/image.jpg',
+        // 'embed:image' => 'https://image34.360doc.com/DownloadImg/2011/08/2222/16275597_64.jpg',
+        // 'embed:image' => [file_get_contents('/path/to/image1.jpg')],
+        // 'embed:image' => [file_get_contents('/path/to/image1.jpg','图片.png','image/png')],
      ])
     ->send();
 ```
@@ -189,12 +189,15 @@ Mailer::instance()
 
 ### 添加附件
 ```
-$mailer->attach('http://domain.com/path/to/file.jpg');
+$mailer->attach('/path/to/file.jpg');
+$mailer->attachContent(fopen('/path/to/file.jpg','r'));
 ```
 
 或者指定附件的文件名
 ```
-$mailer->attach(ROOT_PATH . 'foo.jpg', ['fileName'=>文件名.jpg','contentType'=>'image/jpeg']);
+$mailer->attach('/path/to/file.jpg', ['fileName'=>文件名.jpg','contentType'=>'image/jpeg']);
+
+$mailer->attachContent(fopen('/path/to/file.jpg','r'),['fileName'=>文件名.jpg','contentType'=>'image/jpeg']);
 ```
 
 ### 设置字符编码
@@ -324,7 +327,7 @@ public function view($template, $param = [], $config = [])
     }
     $content = $view->fetch($template, $param, [], $config);
 
-    return $this->html($content,'','');
+    return $this->html($content);
 }
 ```
 

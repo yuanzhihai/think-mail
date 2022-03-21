@@ -37,6 +37,6 @@ class Mailer extends \mailer\Mailer
         }
         $content = $view->fetch($template, $param, [], $config);
 
-        return $this->html($content, '', '');
+        return $this->html($content);
     }
 }
