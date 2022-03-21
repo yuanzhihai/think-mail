@@ -670,7 +670,7 @@ class Mailer
                     $v[1] = $name;
                 }
                 if (!isset($v[2])) {
-                    $v[2] = 'image/jpeg';
+                    $v[2] = null;
                 }
                 [$img, $name, $mime] = $v;
                 $this->message->embed($img, $name, $mime);
