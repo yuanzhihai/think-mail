@@ -304,11 +304,11 @@ class Mailer
      * 设置邮件内容为HTML内容
      *
      * @param string $content
-     * @param $param
-     * @param $config
+     * @param array $param
+     * @param array $config
      * @return $this
      */
-    public function html(string $content, $param, $config): self
+    public function html(string $content, array $param=[], array $config=[]): self
     {
         if ($param) {
             $content = strtr($content, $this->parseParam($param, $config));
@@ -331,12 +331,12 @@ class Mailer
      * 设置邮件内容为纯文本内容
      *
      * @param string $content
-     * @param $param
-     * @param $config
+     * @param array $param
+     * @param array $config
      *
      * @return $this
      */
-    public function text(string $content, $param, $config): self
+    public function text(string $content, array $param=[], array $config=[]): self
     {
         if ($param) {
             $content = strtr($content, $this->parseParam($param, $config));
