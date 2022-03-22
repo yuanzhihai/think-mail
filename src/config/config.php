@@ -10,7 +10,7 @@ return [
     'password'        => '', // 密码
     'port'            => 465, // SMTP服务器端口号,一般为25
     'options'         => [], // See: https://symfony.com/doc/current/mailer.html#tls-peer-verification
-    'dsn'             => '',
+    'dsn'             => '', //优先使用改配置
     'debug'           => false, // 开启debug模式会直接抛出异常, 记录邮件发送日志
     'left_delimiter'  => '{', // 模板变量替换左定界符, 可选, 默认为 {
     'right_delimiter' => '}', // 模板变量替换右定界符, 可选, 默认为 }

@@ -24,11 +24,10 @@ class Mailer extends \mailer\Mailer
      *
      * @param string $template
      * @param array $param
-     * @param array $config
      *
      * @return Mailer
      */
-    public function view(string $template, array $param = [], array $config = []): Mailer
+    public function view(string $template, array $param = []): Mailer
     {
         $view = View::instance(ThinkConfig::get('view'), ThinkConfig::get('tpl_replace_string'));
         // 处理变量中包含有对元数据嵌入的变量

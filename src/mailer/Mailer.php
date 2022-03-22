@@ -26,7 +26,7 @@ use Symfony\Component\Mime\Header\HeaderInterface;
 /**
  * Class Mailer
  * @package mailer
- * @method Mailer view(string $template, array $param = [], array $config = [])
+ * @method Mailer view(string $template, array $param = [])
  */
 class Mailer
 {
@@ -626,7 +626,6 @@ class Mailer
             return true;
         } catch (TransportExceptionInterface $e) {
             $this->err_msg = $e->getMessage();
-            Log::write($e->getMessage(), Log::ERROR);
             if (Config::get('debug')) {
                 // 调试模式直接抛出异常
                 throw new Exception($e->getMessage());
