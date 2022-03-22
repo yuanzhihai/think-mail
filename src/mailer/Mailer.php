@@ -15,7 +15,6 @@ use DateTimeInterface;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Mailer\Exception\RuntimeException;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
-use Symfony\Component\Mailer\Transport\TransportInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Crypto\DkimSigner;
 use Symfony\Component\Mime\Crypto\SMimeEncrypter;
