@@ -172,6 +172,18 @@ class Mailer
     }
 
     /**
+     * 增加发件人
+     * @param array|string $address
+     * @return $this
+     */
+    public function addFrom(array|string $address): self
+    {
+        $this->message->addFrom(...$this->convertStringsToAddresses($address));
+
+        return $this;
+    }
+
+    /**
      * 获取发件人
      * @return array|string
      */
@@ -190,6 +202,18 @@ class Mailer
     public function to(array|string $address): self
     {
         $this->message->to(...$this->convertStringsToAddresses($address));
+
+        return $this;
+    }
+
+    /**
+     * 增加收件人
+     * @param array|string $address
+     * @return $this
+     */
+    public function addTo(array|string $address): self
+    {
+        $this->message->addTo(...$this->convertStringsToAddresses($address));
 
         return $this;
     }
@@ -215,6 +239,18 @@ class Mailer
     }
 
     /**
+     * 增加抄送人
+     * @param array|string $address
+     * @return $this
+     */
+    public function addCc(array|string $address): self
+    {
+        $this->message->addCc(...$this->convertStringsToAddresses($address));
+
+        return $this;
+    }
+
+    /**
      * 获取抄送人
      * @return string|array
      */
@@ -231,6 +267,18 @@ class Mailer
     public function bcc(array|string $address): self
     {
         $this->message->bcc(...$this->convertStringsToAddresses($address));
+
+        return $this;
+    }
+
+    /**
+     * 增加暗抄人
+     * @param array|string $address
+     * @return $this
+     */
+    public function addBcc(array|string $address): self
+    {
+        $this->message->addBcc(...$this->convertStringsToAddresses($address));
 
         return $this;
     }
@@ -423,10 +471,23 @@ class Mailer
      */
     public function replyTo(array|string $address): self
     {
-        $this->message->replyTo($address);
+        $this->message->replyTo(...$this->convertStringsToAddresses($address));
 
         return $this;
     }
+
+    /**
+     * 增加回复邮件地址
+     * @param array|string $address
+     * @return $this
+     */
+    public function addReplyTo(array|string $address): self
+    {
+        $this->message->addReplyTo(...$this->convertStringsToAddresses($address));
+
+        return $this;
+    }
+
 
     public function getReplyTo(): array|string
     {
