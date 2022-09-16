@@ -394,12 +394,11 @@ class Mailer
      */
     public function view(string $template, array $param = [])
     {
-        $view = View::instance(Config::get('view'), Config::get('tpl_replace_string'));
         // 处理变量中包含有对元数据嵌入的变量
         foreach ( $param as $k => $v ) {
             $this->embedImage($k, $v, $param);
         }
-        $content = $view->fetch($template, $param);
+        $content = View::fetch($template, $param);
         return $this->html($content);
     }
 
@@ -589,13 +588,13 @@ class Mailer
      */
     protected function parseParam(array $param, array $config = [])
     {
-        $ret            = [];
-        $leftDelimiter  = $config['left'] ?: Config::get('view.tpl_begin', '{');
-        $rightDelimiter = $config['right'] ?: Config::get('view.tpl_end', '}');
+        $ret   = [];
+        $left  = $config['left'] ?: Config::get('view.tpl_begin', '{');
+        $right = $config['right'] ?: Config::get('view.tpl_end', '}');
         foreach ( $param as $k => $v ) {
             // 处理变量中包含有对元数据嵌入的变量
             $this->embedImage($k, $v, $param);
-            $ret[$leftDelimiter . $k . $rightDelimiter] = $v;
+            $ret[$left . $k . $right] = $v;
         }
 
         return $ret;
