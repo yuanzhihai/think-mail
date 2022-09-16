@@ -21,18 +21,16 @@ use Symfony\Component\Mime\Crypto\SMimeEncrypter;
 use Symfony\Component\Mime\Crypto\SMimeSigner;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\Header\HeaderInterface;
+use think\facade\Config;
+use think\facade\Log;
+use think\facade\View;
 
 /**
  * Class Mailer
  * @package mailer
- * @method Mailer view(string $template, array $param = [])
  */
 class Mailer
 {
-    /*
-     * @var Mailer 单例
-     */
-    protected static $instance;
 
     private string $charset = 'utf-8';
     /**
@@ -45,6 +43,8 @@ class Mailer
      */
     protected ?string $err_msg;
 
+    protected $html;
+
     /**
      * @var DkimSigner|SMimeSigner|null
      */
@@ -54,18 +54,6 @@ class Mailer
     private ?SMimeEncrypter $encryptor = null;
 
     private mixed $transport;
-
-    /**
-     *
-     * @return Mailer
-     */
-    public static function instance($transport = [])
-    {
-        if (null === self::$instance) {
-            self::$instance = new static($transport);
-        }
-        return self::$instance;
-    }
 
 
     public function __construct($transport = [])
@@ -109,6 +97,7 @@ class Mailer
     public function charset(string $charset): self
     {
         $this->charset = $charset;
+
         return $this;
     }
 
@@ -154,6 +143,7 @@ class Mailer
     public function date(DateTimeInterface $date): self
     {
         $this->message->date($date);
+
         return $this;
     }
 
@@ -310,6 +300,7 @@ class Mailer
     public function addHeader($name, $value): self
     {
         $this->message->getHeaders()->addTextHeader($name, $value);
+
         return $this;
     }
 
@@ -322,11 +313,11 @@ class Mailer
     {
         $headers = $this->message->getHeaders();
 
-        if ($headers->has($name)) {
+        if ( $headers->has($name) ) {
             $headers->remove($name);
         }
 
-        foreach ((array)$value as $v) {
+        foreach ( (array)$value as $v ) {
             $headers->addTextHeader($name, $v);
         }
 
@@ -340,7 +331,7 @@ class Mailer
      */
     public function headers(array $headers): self
     {
-        foreach ($headers as $name => $value) {
+        foreach ( $headers as $name => $value ) {
             $this->header($name, $value);
         }
 
@@ -357,7 +348,9 @@ class Mailer
      */
     public function html(string $content, array $param = [], array $config = []): self
     {
-        if ($param) {
+        $this->html = $content;
+
+        if ( $param ) {
             $content = strtr($content, $this->parseParam($param, $config));
         }
         $this->message->html($content, $this->charset);
@@ -385,7 +378,7 @@ class Mailer
      */
     public function text(string $content, array $param = [], array $config = []): self
     {
-        if ($param) {
+        if ( $param ) {
             $content = strtr($content, $this->parseParam($param, $config));
         }
         $this->message->text($content, $this->charset);
@@ -393,6 +386,31 @@ class Mailer
         return $this;
     }
 
+    /**
+     * 设置模板
+     * @param string $template
+     * @param array $param
+     * @return $this
+     */
+    public function view(string $template, array $param = [])
+    {
+        $view = View::instance(Config::get('view'), Config::get('tpl_replace_string'));
+        // 处理变量中包含有对元数据嵌入的变量
+        foreach ( $param as $k => $v ) {
+            $this->embedImage($k, $v, $param);
+        }
+        $content = $view->fetch($template, $param);
+        return $this->html($content);
+    }
+
+    /**
+     * 获取邮件内容
+     * @return string
+     */
+    public function render(): string
+    {
+        return $this->html ?: $this->getTextBody();
+    }
 
     /**
      * 添加附件
@@ -405,12 +423,12 @@ class Mailer
     public function attach(string $filePath, array $options = []): self
     {
         $file = [];
-        if (!empty($options['fileName'])) {
+        if ( !empty($options['fileName']) ) {
             $file['name'] = $options['fileName'];
         } else {
             $file['name'] = $filePath;
         }
-        if (!empty($options['contentType'])) {
+        if ( !empty($options['contentType']) ) {
             $file['contentType'] = $options['contentType'];
         } else {
             $file['contentType'] = mime_content_type($filePath);
@@ -429,19 +447,20 @@ class Mailer
     public function attachContent($content, array $options = []): self
     {
         $file = [];
-        if (!empty($options['fileName'])) {
+        if ( !empty($options['fileName']) ) {
             $file['name'] = $options['fileName'];
         } else {
             $file['name'] = null;
         }
 
-        if (!empty($options['contentType'])) {
+        if ( !empty($options['contentType']) ) {
             $file['contentType'] = $options['contentType'];
         } else {
             $file['contentType'] = null;
         }
 
         $this->message->attach($content, $file['name'], $file['contentType']);
+
         return $this;
     }
 
@@ -508,6 +527,7 @@ class Mailer
     public function returnPath(string $address): self
     {
         $this->message->returnPath($address);
+
         return $this;
     }
 
@@ -524,6 +544,7 @@ class Mailer
     public function sender(string $address): self
     {
         $this->message->sender($address);
+
         return $this;
     }
 
@@ -535,14 +556,14 @@ class Mailer
     public function getHeaders($name): array
     {
         $headers = $this->message->getHeaders();
-        if (!$headers->has($name)) {
+        if ( !$headers->has($name) ) {
             return [];
         }
 
         $values = [];
 
         /** @var HeaderInterface $header */
-        foreach ($headers->all($name) as $header) {
+        foreach ( $headers->all($name) as $header ) {
             $values[] = $header->getBodyAsString();
         }
 
@@ -569,9 +590,9 @@ class Mailer
     protected function parseParam(array $param, array $config = [])
     {
         $ret            = [];
-        $leftDelimiter  = $config['left_delimiter'] ?: Config::get('left_delimiter', '{');
-        $rightDelimiter = $config['right_delimiter'] ?: Config::get('right_delimiter', '}');
-        foreach ($param as $k => $v) {
+        $leftDelimiter  = $config['left'] ?: Config::get('view.tpl_begin', '{');
+        $rightDelimiter = $config['right'] ?: Config::get('view.tpl_end', '}');
+        foreach ( $param as $k => $v ) {
             // 处理变量中包含有对元数据嵌入的变量
             $this->embedImage($k, $v, $param);
             $ret[$leftDelimiter . $k . $rightDelimiter] = $v;
@@ -613,13 +634,13 @@ class Mailer
     {
         $new = clone $this;
 
-        if ($signer instanceof DkimSigner) {
+        if ( $signer instanceof DkimSigner ) {
             $new->signer            = $signer;
             $new->dkimSignerOptions = $options;
             return $new;
         }
 
-        if ($signer instanceof SMimeSigner) {
+        if ( $signer instanceof SMimeSigner ) {
             $new->signer = $signer;
             return $new;
         }
@@ -653,11 +674,11 @@ class Mailer
     {
         try {
             // 匿名函数
-            if ($message instanceof \Closure) {
+            if ( $message instanceof \Closure ) {
                 call_user_func_array($message, [&$this, &$this->message]);
             }
 
-            if (empty($transport) && $this->transport) {
+            if ( empty($transport) && $this->transport ) {
                 $transport = $this->transport;
             }
 
@@ -665,17 +686,13 @@ class Mailer
             $transportInstance->setTransport($transport);
             $mailer = $transportInstance->getSymfonyMailer();
 
-            if (Config::get('debug')) {
-                Log::write(var_export($this->getHeadersString(), true), Log::INFO);
-            }
-
             $message = $this->getSymfonyMessage();
 
-            if ($this->encryptor !== null) {
+            if ( $this->encryptor !== null ) {
                 $message = $this->encryptor->encrypt($message);
             }
 
-            if ($this->signer !== null) {
+            if ( $this->signer !== null ) {
                 $message = $this->signer instanceof DkimSigner
                     ? $this->signer->sign($message, $this->dkimSignerOptions)
                     : $this->signer->sign($message);
@@ -684,18 +701,18 @@ class Mailer
             // 发送邮件
             $mailer->send($message);
             return true;
-        } catch (TransportExceptionInterface $e) {
+        } catch ( TransportExceptionInterface $e ) {
             $this->err_msg = $e->getMessage();
-            if (Config::get('debug')) {
+            if ( Config::get('mailer.debug') ) {
                 // 调试模式直接抛出异常
-                throw new Exception($e->getMessage());
+                Log::debug($e->getMessage());
             }
             return false;
-        } catch (Exception $e) {
+        } catch ( Exception $e ) {
             $this->err_msg = $e->getMessage();
-            if (Config::get('debug')) {
+            if ( Config::get('mailer.debug') ) {
                 // 调试模式直接抛出异常
-                throw new Exception($e->getMessage());
+                Log::debug($e->getMessage());
             }
             return false;
         }
@@ -722,13 +739,13 @@ class Mailer
     protected function embedImage(string &$k, array|string &$v, array &$param)
     {
         $flag = Config::get('embed', 'cid:');
-        if (str_contains($k, $flag)) {
+        if ( str_contains($k, $flag) ) {
             $name = 'image';
-            if (is_array($v) && $v) {
-                if (!isset($v[1])) {
+            if ( is_array($v) && $v ) {
+                if ( !isset($v[1]) ) {
                     $v[1] = $name;
                 }
-                if (!isset($v[2])) {
+                if ( !isset($v[2]) ) {
                     $v[2] = null;
                 }
                 [$img, $name, $mime] = $v;
@@ -754,7 +771,7 @@ class Mailer
     {
         $strings = [];
 
-        foreach ($addresses as $address) {
+        foreach ( $addresses as $address ) {
             $strings[$address->getAddress()] = $address->getName();
         }
 
@@ -770,14 +787,14 @@ class Mailer
      */
     private function convertStringsToAddresses(array|string $strings): array
     {
-        if (is_string($strings)) {
+        if ( is_string($strings) ) {
             return [new Address($strings)];
         }
 
         $addresses = [];
 
-        foreach ($strings as $address => $name) {
-            if (!is_string($address)) {
+        foreach ( $strings as $address => $name ) {
+            if ( !is_string($address) ) {
                 // email address without name
                 $addresses[] = new Address($name);
                 continue;
