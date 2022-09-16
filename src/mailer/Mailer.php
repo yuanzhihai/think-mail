@@ -738,7 +738,7 @@ class Mailer
      */
     protected function embedImage(string &$k, array|string &$v, array &$param)
     {
-        $flag = Config::get('embed', 'cid:');
+        $flag = Config::get('mailer.embed', 'cid:');
         if ( str_contains($k, $flag) ) {
             $name = 'image';
             if ( is_array($v) && $v ) {
