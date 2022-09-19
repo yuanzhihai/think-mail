@@ -13,6 +13,7 @@ namespace mailer;
 use Symfony\Component\Mailer\Mailer as SymfonyMailer;
 use Symfony\Component\Mailer\Transport\Dsn;
 use Symfony\Component\Mailer\Transport\TransportInterface;
+use think\facade\Config;
 
 /**
  * Class Transport
@@ -78,11 +79,11 @@ class Transport
 
     private function createTransport(array $config = []): TransportInterface
     {
-        $config           = array_merge(Config::get(), $config);
+        $config           = array_merge(Config::get('mailer'), $config);
         $defaultFactories = \Symfony\Component\Mailer\Transport::getDefaultFactories(null, null, null);
         $transportObj     = new \Symfony\Component\Mailer\Transport($defaultFactories);
 
-        if (array_key_exists('dsn', $config)) {
+        if (array_key_exists('dsn', $config) ) {
             $transport = $transportObj->fromString($config['dsn']);
         } elseif (array_key_exists('scheme', $config) && array_key_exists('host', $config)) {
             $dsn       = new Dsn(
@@ -95,7 +96,7 @@ class Transport
             );
             $transport = $transportObj->fromDsnObject($dsn);
         } else {
-            $transport = $transportObj->fromString('null://null');
+            throw new InvalidArgumentException('Transport configuration array must contain either "dsn", or "scheme" and "host" keys.');
         }
         return $transport;
     }
