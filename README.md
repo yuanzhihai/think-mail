@@ -1,6 +1,6 @@
 ## Think Mail
 
-**一款支持所有PHP框架的优美的邮件发送类**，ThinkPHP框架【6.0.x】开箱即用
+**一款优美的邮件发送类**，ThinkPHP框架【6.0.x】开箱即用
 
 基于 symfony mailer 二次开发, 为 ThinkPHP系列框架量身定制, 使 ThinkPHP 支持邮件模板、纯文本、附件邮件发送以及更多邮件功能,
 邮件发送简单到只需一行代码
