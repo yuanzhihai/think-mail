@@ -22,9 +22,9 @@ use think\facade\Config;
 class Transport
 {
     /**
-     * @var null|TransportInterface Symfony transport instance or its array configuration.
+     * @var array|TransportInterface|null Symfony transport instance or its array configuration.
      */
-    private ?TransportInterface $_transport = null;
+    private TransportInterface|array|null $_transport = null;
 
     private ?SymfonyMailer $symfonyMailer = null;
 
