@@ -22,9 +22,9 @@ use think\facade\Config;
 class Transport
 {
     /**
-     * @var TransportInterface|array Symfony transport instance or its array configuration.
+     * @var null|TransportInterface Symfony transport instance or its array configuration.
      */
-    private $_transport = [];
+    private ?TransportInterface $_transport = null;
 
     private ?SymfonyMailer $symfonyMailer = null;
 
@@ -68,19 +68,17 @@ class Transport
         if (!is_array($transport) && !$transport instanceof TransportInterface) {
             throw new InvalidArgumentException('"' . get_class($this) . '::transport" should be either object or array, "' . gettype($transport) . '" given.');
         }
-        if ($transport instanceof TransportInterface) {
-            $this->_transport = $transport;
-        } elseif (is_array($transport)) {
-            $this->_transport = $this->createTransport($transport);
-        }
+
+        $this->_transport = $transport instanceof TransportInterface ? $transport : $this->createTransport($transport);
 
         $this->symfonyMailer = null;
     }
 
+
     private function createTransport(array $config = []): TransportInterface
     {
         $config           = array_merge(Config::get('mailer'), $config);
-        $defaultFactories = \Symfony\Component\Mailer\Transport::getDefaultFactories(null, null, null);
+        $defaultFactories = \Symfony\Component\Mailer\Transport::getDefaultFactories();
         $transportObj     = new \Symfony\Component\Mailer\Transport($defaultFactories);
 
         if (array_key_exists('dsn', $config) ) {
@@ -91,7 +89,7 @@ class Transport
                 $config['host'],
                 $config['username'] ?? '',
                 $config['password'] ?? '',
-                $config['port'] ?? '',
+                $config['port'] ?? null,
                 $config['options'] ?? [],
             );
             $transport = $transportObj->fromDsnObject($dsn);

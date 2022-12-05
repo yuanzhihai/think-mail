@@ -13,12 +13,8 @@ namespace mailer;
 use DateTimeImmutable;
 use DateTimeInterface;
 use JetBrains\PhpStorm\Pure;
-use Symfony\Component\Mailer\Exception\RuntimeException;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mime\Address;
-use Symfony\Component\Mime\Crypto\DkimSigner;
-use Symfony\Component\Mime\Crypto\SMimeEncrypter;
-use Symfony\Component\Mime\Crypto\SMimeSigner;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\Header\HeaderInterface;
 use think\facade\Config;
@@ -45,26 +41,33 @@ class Mailer
 
     protected $html;
 
-    /**
-     * @var DkimSigner|SMimeSigner|null
-     */
-    private $signer = null;
-    private array $dkimSignerOptions = [];
 
-    private ?SMimeEncrypter $encryptor = null;
+    private ?MessageEncrypterInterface $encrypter = null;
+
+    /**
+     * @see https://symfony.com/doc/current/mailer.html#signing-messages
+     */
+    public ?MessageSignerInterface $signer = null;
+
+    public array $signerOptions = [];
 
     private mixed $transport;
 
 
-    public function __construct($transport = [])
+    public function __construct($config = [])
     {
-        $this->transport = $transport;
+        $this->transport = $config;
         $this->init();
     }
 
     public function __clone()
     {
         $this->message = clone $this->message;
+    }
+
+    public function __sleep(): array
+    {
+        return ['email','charset'];
     }
 
     /**
@@ -110,7 +113,7 @@ class Mailer
      */
     public function subject(string $subject): self
     {
-        $this->message->subject($subject);
+        $this->message->subject( $subject );
 
         return $this;
     }
@@ -142,7 +145,7 @@ class Mailer
      */
     public function date(DateTimeInterface $date): self
     {
-        $this->message->date($date);
+        $this->message->date( $date );
 
         return $this;
     }
@@ -156,7 +159,7 @@ class Mailer
      */
     public function from(array|string $address): self
     {
-        $this->message->from(...$this->convertStringsToAddresses($address));
+        $this->message->from( ...$this->convertStringsToAddresses( $address ) );
 
         return $this;
     }
@@ -168,7 +171,7 @@ class Mailer
      */
     public function addFrom(array|string $address): self
     {
-        $this->message->addFrom(...$this->convertStringsToAddresses($address));
+        $this->message->addFrom( ...$this->convertStringsToAddresses( $address ) );
 
         return $this;
     }
@@ -179,7 +182,7 @@ class Mailer
      */
     public function getFrom(): array|string
     {
-        return $this->convertAddressesToStrings($this->message->getFrom());
+        return $this->convertAddressesToStrings( $this->message->getFrom() );
     }
 
     /**
@@ -191,7 +194,7 @@ class Mailer
      */
     public function to(array|string $address): self
     {
-        $this->message->to(...$this->convertStringsToAddresses($address));
+        $this->message->to( ...$this->convertStringsToAddresses( $address ) );
 
         return $this;
     }
@@ -203,7 +206,7 @@ class Mailer
      */
     public function addTo(array|string $address): self
     {
-        $this->message->addTo(...$this->convertStringsToAddresses($address));
+        $this->message->addTo( ...$this->convertStringsToAddresses( $address ) );
 
         return $this;
     }
@@ -213,7 +216,7 @@ class Mailer
      */
     public function getTo(): array|string
     {
-        return $this->convertAddressesToStrings($this->message->getTo());
+        return $this->convertAddressesToStrings( $this->message->getTo() );
     }
 
     /**
@@ -223,7 +226,7 @@ class Mailer
      */
     public function cc(array|string $address): self
     {
-        $this->message->cc(...$this->convertStringsToAddresses($address));
+        $this->message->cc( ...$this->convertStringsToAddresses( $address ) );
 
         return $this;
     }
@@ -235,7 +238,7 @@ class Mailer
      */
     public function addCc(array|string $address): self
     {
-        $this->message->addCc(...$this->convertStringsToAddresses($address));
+        $this->message->addCc( ...$this->convertStringsToAddresses( $address ) );
 
         return $this;
     }
@@ -246,7 +249,7 @@ class Mailer
      */
     public function getCc(): array|string
     {
-        return $this->convertAddressesToStrings($this->message->getCc());
+        return $this->convertAddressesToStrings( $this->message->getCc() );
     }
 
     /**
@@ -256,7 +259,7 @@ class Mailer
      */
     public function bcc(array|string $address): self
     {
-        $this->message->bcc(...$this->convertStringsToAddresses($address));
+        $this->message->bcc( ...$this->convertStringsToAddresses( $address ) );
 
         return $this;
     }
@@ -268,7 +271,7 @@ class Mailer
      */
     public function addBcc(array|string $address): self
     {
-        $this->message->addBcc(...$this->convertStringsToAddresses($address));
+        $this->message->addBcc( ...$this->convertStringsToAddresses( $address ) );
 
         return $this;
     }
@@ -279,7 +282,7 @@ class Mailer
      */
     public function getBcc(): array|string
     {
-        return $this->convertAddressesToStrings($this->message->getBcc());
+        return $this->convertAddressesToStrings( $this->message->getBcc() );
     }
 
     /**
@@ -297,9 +300,9 @@ class Mailer
      * @param $value
      * @return $this
      */
-    public function addHeader($name, $value): self
+    public function addHeader($name,$value): self
     {
-        $this->message->getHeaders()->addTextHeader($name, $value);
+        $this->message->getHeaders()->addTextHeader( $name,$value );
 
         return $this;
     }
@@ -309,16 +312,16 @@ class Mailer
      * @param $value
      * @return $this
      */
-    public function header($name, $value): self
+    public function header($name,$value): self
     {
         $headers = $this->message->getHeaders();
 
-        if ( $headers->has($name) ) {
-            $headers->remove($name);
+        if ($headers->has( $name )) {
+            $headers->remove( $name );
         }
 
         foreach ( (array)$value as $v ) {
-            $headers->addTextHeader($name, $v);
+            $headers->addTextHeader( $name,$v );
         }
 
         return $this;
@@ -332,7 +335,7 @@ class Mailer
     public function headers(array $headers): self
     {
         foreach ( $headers as $name => $value ) {
-            $this->header($name, $value);
+            $this->header( $name,$value );
         }
 
         return $this;
@@ -346,14 +349,14 @@ class Mailer
      * @param array $config
      * @return $this
      */
-    public function html(string $content, array $param = [], array $config = []): self
+    public function html(string $content,array $param = [],array $config = []): self
     {
         $this->html = $content;
 
-        if ( $param ) {
-            $content = strtr($content, $this->parseParam($param, $config));
+        if ($param) {
+            $content = strtr( $content,$this->parseParam( $param,$config ) );
         }
-        $this->message->html($content, $this->charset);
+        $this->message->html( $content,$this->charset );
 
         return $this;
     }
@@ -376,12 +379,12 @@ class Mailer
      *
      * @return $this
      */
-    public function text(string $content, array $param = [], array $config = []): self
+    public function text(string $content,array $param = [],array $config = []): self
     {
-        if ( $param ) {
-            $content = strtr($content, $this->parseParam($param, $config));
+        if ($param) {
+            $content = strtr( $content,$this->parseParam( $param,$config ) );
         }
-        $this->message->text($content, $this->charset);
+        $this->message->text( $content,$this->charset );
 
         return $this;
     }
@@ -392,14 +395,14 @@ class Mailer
      * @param array $param
      * @return $this
      */
-    public function view(string $template, array $param = [])
+    public function view(string $template,array $param = [])
     {
         // 处理变量中包含有对元数据嵌入的变量
         foreach ( $param as $k => $v ) {
-            $this->embedImage($k, $v, $param);
+            $this->embedImage( $k,$v,$param );
         }
-        $content = View::fetch($template, $param);
-        return $this->html($content);
+        $content = View::fetch( $template,$param );
+        return $this->html( $content );
     }
 
     /**
@@ -419,20 +422,20 @@ class Mailer
      *
      * @return $this
      */
-    public function attach(string $filePath, array $options = []): self
+    public function attach(string $filePath,array $options = []): self
     {
         $file = [];
-        if ( !empty($options['fileName']) ) {
+        if (!empty( $options['fileName'] )) {
             $file['name'] = $options['fileName'];
         } else {
             $file['name'] = $filePath;
         }
-        if ( !empty($options['contentType']) ) {
+        if (!empty( $options['contentType'] )) {
             $file['contentType'] = $options['contentType'];
         } else {
-            $file['contentType'] = mime_content_type($filePath);
+            $file['contentType'] = mime_content_type( $filePath );
         }
-        $this->message->attachFromPath($filePath, $file['name'], $file['contentType']);
+        $this->message->attachFromPath( $filePath,$file['name'],$file['contentType'] );
 
         return $this;
     }
@@ -443,22 +446,22 @@ class Mailer
      *
      * @return $this
      */
-    public function attachContent($content, array $options = []): self
+    public function attachContent($content,array $options = []): self
     {
         $file = [];
-        if ( !empty($options['fileName']) ) {
+        if (!empty( $options['fileName'] )) {
             $file['name'] = $options['fileName'];
         } else {
             $file['name'] = null;
         }
 
-        if ( !empty($options['contentType']) ) {
+        if (!empty( $options['contentType'] )) {
             $file['contentType'] = $options['contentType'];
         } else {
             $file['contentType'] = null;
         }
 
-        $this->message->attach($content, $file['name'], $file['contentType']);
+        $this->message->attach( $content,$file['name'],$file['contentType'] );
 
         return $this;
     }
@@ -472,7 +475,7 @@ class Mailer
      */
     public function priority(int $priority = 1): self
     {
-        $this->message->priority($priority);
+        $this->message->priority( $priority );
 
         return $this;
     }
@@ -489,7 +492,7 @@ class Mailer
      */
     public function replyTo(array|string $address): self
     {
-        $this->message->replyTo(...$this->convertStringsToAddresses($address));
+        $this->message->replyTo( ...$this->convertStringsToAddresses( $address ) );
 
         return $this;
     }
@@ -501,7 +504,7 @@ class Mailer
      */
     public function addReplyTo(array|string $address): self
     {
-        $this->message->addReplyTo(...$this->convertStringsToAddresses($address));
+        $this->message->addReplyTo( ...$this->convertStringsToAddresses( $address ) );
 
         return $this;
     }
@@ -509,7 +512,7 @@ class Mailer
 
     public function getReplyTo(): array|string
     {
-        return $this->convertAddressesToStrings($this->message->getReplyTo());
+        return $this->convertAddressesToStrings( $this->message->getReplyTo() );
     }
 
     public function getReturnPath(): string
@@ -525,7 +528,7 @@ class Mailer
      */
     public function returnPath(string $address): self
     {
-        $this->message->returnPath($address);
+        $this->message->returnPath( $address );
 
         return $this;
     }
@@ -542,7 +545,7 @@ class Mailer
      */
     public function sender(string $address): self
     {
-        $this->message->sender($address);
+        $this->message->sender( $address );
 
         return $this;
     }
@@ -555,14 +558,14 @@ class Mailer
     public function getHeaders($name): array
     {
         $headers = $this->message->getHeaders();
-        if ( !$headers->has($name) ) {
+        if (!$headers->has( $name )) {
             return [];
         }
 
         $values = [];
 
         /** @var HeaderInterface $header */
-        foreach ( $headers->all($name) as $header ) {
+        foreach ( $headers->all( $name ) as $header ) {
             $values[] = $header->getBodyAsString();
         }
 
@@ -586,71 +589,20 @@ class Mailer
      * @param array $config
      * @return array
      */
-    protected function parseParam(array $param, array $config = [])
+    protected function parseParam(array $param,array $config = [])
     {
         $ret   = [];
-        $left  = $config['left'] ?: Config::get('view.tpl_begin', '{');
-        $right = $config['right'] ?: Config::get('view.tpl_end', '}');
+        $left  = $config['left'] ?: Config::get( 'view.tpl_begin','{' );
+        $right = $config['right'] ?: Config::get( 'view.tpl_end','}' );
         foreach ( $param as $k => $v ) {
             // 处理变量中包含有对元数据嵌入的变量
-            $this->embedImage($k, $v, $param);
-            $ret[$left . $k . $right] = $v;
+            $this->embedImage( $k,$v,$param );
+            $ret[$left.$k.$right] = $v;
         }
 
         return $ret;
     }
 
-
-    /**
-     * Returns a new instance with the specified encryptor.
-     *
-     * @param SMimeEncrypter $encryptor The encryptor instance.
-     *
-     * @return self
-     * @see https://symfony.com/doc/current/mailer.html#encrypting-messages
-     *
-     */
-    public function withEncryptor(SMimeEncrypter $encryptor): self
-    {
-        $new            = clone $this;
-        $new->encryptor = $encryptor;
-        return $new;
-    }
-
-    /**
-     * Returns a new instance with the specified signer.
-     *
-     * @param DkimSigner|SMimeSigner|object $signer The signer instance.
-     * @param array $options The options for DKIM signer {@see DkimSigner}.
-     *
-     * @return self
-     * @throws RuntimeException If the signer is not an instance of {@see DkimSigner} or {@see SMimeSigner}.
-     *
-     * @see https://symfony.com/doc/current/mailer.html#signing-messages
-     *
-     */
-    public function withSigner(object $signer, array $options = []): self
-    {
-        $new = clone $this;
-
-        if ( $signer instanceof DkimSigner ) {
-            $new->signer            = $signer;
-            $new->dkimSignerOptions = $options;
-            return $new;
-        }
-
-        if ( $signer instanceof SMimeSigner ) {
-            $new->signer = $signer;
-            return $new;
-        }
-
-        throw new RuntimeException(sprintf(
-            'The signer must be an instance of "%s" or "%s". The "%s" instance is received.',
-            DkimSigner::class,
-            SMimeSigner::class,
-            get_class($signer),
-        ));
-    }
 
     /**
      * Returns a Symfony message instance.
@@ -669,49 +621,55 @@ class Mailer
      * @return bool
      * @throws Exception
      */
-    public function send(\Closure $message = null, array $transport = []): bool
+    public function send(\Closure $message = null,array $transport = []): bool
     {
         try {
             // 匿名函数
-            if ( $message instanceof \Closure ) {
-                call_user_func_array($message, [&$this, &$this->message]);
+            if ($message instanceof \Closure) {
+                call_user_func_array( $message,[&$this,&$this->message] );
             }
 
-            if ( empty($transport) && $this->transport ) {
+            if (!($message instanceof MessageWrapperInterface)) {
+                throw new InvalidArgumentException(sprintf(
+                    'The message must be an instance of "%s". The "%s" instance is received.',
+                    MessageWrapperInterface::class,
+                    get_class($message),
+                ));
+            }
+
+            if (empty( $transport ) && $this->transport) {
                 $transport = $this->transport;
             }
 
             $transportInstance = new Transport();
-            $transportInstance->setTransport($transport);
+            $transportInstance->setTransport( $transport );
             $mailer = $transportInstance->getSymfonyMailer();
 
             $message = $this->getSymfonyMessage();
 
-            if ( $this->encryptor !== null ) {
-                $message = $this->encryptor->encrypt($message);
+            if ($this->encrypter !== null) {
+                $message = $this->encrypter->encrypt( $message );
             }
 
-            if ( $this->signer !== null ) {
-                $message = $this->signer instanceof DkimSigner
-                    ? $this->signer->sign($message, $this->dkimSignerOptions)
-                    : $this->signer->sign($message);
+            if ($this->signer !== null) {
+                $message = $this->signer->sign( $message,$this->signerOptions );
             }
 
             // 发送邮件
-            $mailer->send($message);
+            $mailer->send( $message );
             return true;
         } catch ( TransportExceptionInterface $e ) {
             $this->err_msg = $e->getMessage();
-            if ( Config::get('mailer.debug') ) {
+            if (Config::get( 'mailer.debug' )) {
                 // 调试模式直接抛出异常
-                Log::debug($e->getMessage());
+                Log::debug( $e->getMessage() );
             }
             return false;
         } catch ( Exception $e ) {
             $this->err_msg = $e->getMessage();
-            if ( Config::get('mailer.debug') ) {
+            if (Config::get( 'mailer.debug' )) {
                 // 调试模式直接抛出异常
-                Log::debug($e->getMessage());
+                Log::debug( $e->getMessage() );
             }
             return false;
         }
@@ -735,26 +693,26 @@ class Mailer
      * @param array|string $v
      * @param array $param
      */
-    protected function embedImage(string &$k, array|string &$v, array &$param)
+    protected function embedImage(string &$k,array|string &$v,array &$param)
     {
-        $flag = Config::get('mailer.embed', 'cid:');
-        if ( str_contains($k, $flag) ) {
+        $flag = Config::get( 'mailer.embed','cid:' );
+        if (str_contains( $k,$flag )) {
             $name = 'image';
-            if ( is_array($v) && $v ) {
-                if ( !isset($v[1]) ) {
+            if (is_array( $v ) && $v) {
+                if (!isset( $v[1] )) {
                     $v[1] = $name;
                 }
-                if ( !isset($v[2]) ) {
+                if (!isset( $v[2] )) {
                     $v[2] = null;
                 }
-                [$img, $name, $mime] = $v;
-                $this->message->embed($img, $name, $mime);
+                [$img,$name,$mime] = $v;
+                $this->message->embed( $img,$name,$mime );
             } else {
-                $this->message->embedFromPath($v, $name);
+                $this->message->embedFromPath( $v,$name );
             }
-            unset($param[$k]);
-            $k         = substr($k, strlen($flag));
-            $param[$k] = $flag . $name;
+            unset( $param[$k] );
+            $k         = substr( $k,strlen( $flag ) );
+            $param[$k] = $flag.$name;
         }
     }
 
@@ -774,7 +732,7 @@ class Mailer
             $strings[$address->getAddress()] = $address->getName();
         }
 
-        return empty($strings) ? '' : $strings;
+        return empty( $strings ) ? '' : $strings;
     }
 
     /**
@@ -786,20 +744,20 @@ class Mailer
      */
     private function convertStringsToAddresses(array|string $strings): array
     {
-        if ( is_string($strings) ) {
-            return [new Address($strings)];
+        if (is_string( $strings )) {
+            return [new Address( $strings )];
         }
 
         $addresses = [];
 
         foreach ( $strings as $address => $name ) {
-            if ( !is_string($address) ) {
+            if (!is_string( $address )) {
                 // email address without name
-                $addresses[] = new Address($name);
+                $addresses[] = new Address( $name );
                 continue;
             }
 
-            $addresses[] = new Address($address, $name);
+            $addresses[] = new Address( $address,$name );
         }
 
         return $addresses;
