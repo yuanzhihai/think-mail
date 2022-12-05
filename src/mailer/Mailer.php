@@ -628,14 +628,6 @@ class Mailer
                 call_user_func_array( $message,[&$this,&$this->message] );
             }
 
-            if (!($message instanceof MessageWrapperInterface)) {
-                throw new InvalidArgumentException(sprintf(
-                    'The message must be an instance of "%s". The "%s" instance is received.',
-                    MessageWrapperInterface::class,
-                    get_class($message),
-                ));
-            }
-
             if (empty( $transport ) && $this->transport) {
                 $transport = $this->transport;
             }
