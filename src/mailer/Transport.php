@@ -34,7 +34,7 @@ class Transport
      */
     private function createSymfonyMailer(): SymfonyMailer
     {
-        return new SymfonyMailer($this->getTransport());
+        return new SymfonyMailer( $this->getTransport() );
     }
 
     /**
@@ -42,7 +42,7 @@ class Transport
      */
     public function getSymfonyMailer(): SymfonyMailer
     {
-        if (!is_object($this->symfonyMailer)) {
+        if (!isset( $this->symfonyMailer )) {
             $this->symfonyMailer = $this->createSymfonyMailer();
         }
         return $this->symfonyMailer;
@@ -53,8 +53,8 @@ class Transport
      */
     public function getTransport(): TransportInterface
     {
-        if (!is_object($this->_transport)) {
-            $this->_transport = $this->createTransport($this->_transport);
+        if (!is_object( $this->_transport )) {
+            $this->_transport = $this->createTransport( $this->_transport );
         }
         return $this->_transport;
     }
@@ -65,11 +65,11 @@ class Transport
      */
     public function setTransport($transport): void
     {
-        if (!is_array($transport) && !$transport instanceof TransportInterface) {
-            throw new InvalidArgumentException('"' . get_class($this) . '::transport" should be either object or array, "' . gettype($transport) . '" given.');
+        if (!is_array( $transport ) && !$transport instanceof TransportInterface) {
+            throw new InvalidArgumentException( '"'.get_class( $this ).'::transport" should be either object or array, "'.gettype( $transport ).'" given.' );
         }
 
-        $this->_transport = $transport instanceof TransportInterface ? $transport : $this->createTransport($transport);
+        $this->_transport = $transport instanceof TransportInterface ? $transport : $this->createTransport( $transport );
 
         $this->symfonyMailer = null;
     }
@@ -77,13 +77,13 @@ class Transport
 
     private function createTransport(array $config = []): TransportInterface
     {
-        $config           = array_merge(Config::get('mailer'), $config);
+        $config           = array_merge( Config::get( 'mailer' ),$config );
         $defaultFactories = \Symfony\Component\Mailer\Transport::getDefaultFactories();
-        $transportObj     = new \Symfony\Component\Mailer\Transport($defaultFactories);
+        $transportObj     = new \Symfony\Component\Mailer\Transport( $defaultFactories );
 
-        if (array_key_exists('dsn', $config) ) {
-            $transport = $transportObj->fromString($config['dsn']);
-        } elseif (array_key_exists('scheme', $config) && array_key_exists('host', $config)) {
+        if (array_key_exists( 'dsn',$config )) {
+            $transport = $transportObj->fromString( $config['dsn'] );
+        } elseif (array_key_exists( 'scheme',$config ) && array_key_exists( 'host',$config )) {
             $dsn       = new Dsn(
                 $config['scheme'],
                 $config['host'],
@@ -92,9 +92,9 @@ class Transport
                 $config['port'] ?? null,
                 $config['options'] ?? [],
             );
-            $transport = $transportObj->fromDsnObject($dsn);
+            $transport = $transportObj->fromDsnObject( $dsn );
         } else {
-            throw new InvalidArgumentException('Transport configuration array must contain either "dsn", or "scheme" and "host" keys.');
+            throw new InvalidArgumentException( 'Transport configuration array must contain either "dsn", or "scheme" and "host" keys.' );
         }
         return $transport;
     }

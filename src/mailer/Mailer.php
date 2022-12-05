@@ -296,11 +296,11 @@ class Mailer
     }
 
     /**
-     * @param $name
-     * @param $value
+     * @param string $name
+     * @param string $value
      * @return $this
      */
-    public function addHeader($name,$value): self
+    public function addHeader(string $name,string $value): self
     {
         $this->message->getHeaders()->addTextHeader( $name,$value );
 
@@ -308,11 +308,11 @@ class Mailer
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @param $value
      * @return $this
      */
-    public function header($name,$value): self
+    public function header(string $name,$value): self
     {
         $headers = $this->message->getHeaders();
 
