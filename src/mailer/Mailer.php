@@ -619,7 +619,6 @@ class Mailer
      * @param \Closure|null $message
      * @param array $transport
      * @return bool
-     * @throws Exception
      */
     public function send(\Closure $message = null,array $transport = []): bool
     {
@@ -665,7 +664,7 @@ class Mailer
                 Log::debug( $e->getMessage() );
             }
             return false;
-        } catch ( Exception $e ) {
+        } catch ( \Throwable $e ) {
             $this->err_msg = $e->getMessage();
             if (Config::get( 'mailer.debug' )) {
                 // 调试模式直接抛出异常
