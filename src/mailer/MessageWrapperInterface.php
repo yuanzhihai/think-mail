@@ -8,5 +8,5 @@ use Symfony\Component\Mime\Email;
 
 interface MessageWrapperInterface
 {
-    public function getSymfonyEmail(): Email;
+    public function getSymfonyMessage(): Email;
 }

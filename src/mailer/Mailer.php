@@ -25,7 +25,7 @@ use think\facade\View;
  * Class Mailer
  * @package mailer
  */
-class Mailer
+class Mailer implements MessageWrapperInterface
 {
 
     private string $charset = 'utf-8';
@@ -635,6 +635,14 @@ class Mailer
             $transportInstance = new Transport();
             $transportInstance->setTransport( $transport );
             $mailer = $transportInstance->getSymfonyMailer();
+
+            if (!($this instanceof MessageWrapperInterface)) {
+                throw new InvalidArgumentException(sprintf(
+                    'The message must be an instance of "%s". The "%s" instance is received.',
+                    MessageWrapperInterface::class,
+                    get_class($this),
+                ));
+            }
 
             $message = $this->getSymfonyMessage();
 
