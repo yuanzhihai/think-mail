@@ -80,9 +80,10 @@ class Transport
         $config           = array_merge( Config::get( 'mailer' ),$config );
         $defaultFactories = \Symfony\Component\Mailer\Transport::getDefaultFactories();
         $transportObj     = new \Symfony\Component\Mailer\Transport( $defaultFactories );
-
-        if (array_key_exists( 'dsn',$config )) {
-            $transport = $transportObj->fromString( $config['dsn'] );
+        if (array_key_exists('dsn', $config) && is_string($config['dsn'])) {
+            $transport = $transportObj->fromString($config['dsn']);
+        } elseif (array_key_exists('dsn', $config) && $config['dsn'] instanceof Dsn) {
+            $transport = $transportObj->fromDsnObject($config['dsn']);
         } elseif (array_key_exists( 'scheme',$config ) && array_key_exists( 'host',$config )) {
             $dsn       = new Dsn(
                 $config['scheme'],
