@@ -1,4 +1,16 @@
-## Think Mail
+<div align="center">
+# Think Mail
+
+<p>
+    <a href="https://github.com/yzh52521/think-mail/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-7389D8.svg?style=flat" ></a>
+     <a href="https://styleci.io/repos/215738797">
+        <img src="https://github.styleci.io/repos/215738797/shield" alt="StyleCI">
+    </a>
+    <a href="https://github.com/yzh52521/think-mail/releases" ><img src="https://img.shields.io/github/release/yzh52521/think-mail.svg?color=4099DE" /></a> 
+    <a href="https://packagist.org/packages/yzh52521/think-mail"><img src="https://img.shields.io/packagist/dt/yzh52521/think-mail.svg?color=" /></a> 
+    <a><img src="https://img.shields.io/badge/php-7.2+-59a9f8.svg?style=flat" /></a> 
+</p>
+</div>
 
 **一款支持所有PHP框架的优美的邮件发送类**，ThinkPHP框架【6.x】开箱即用
 
