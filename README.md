@@ -8,7 +8,7 @@
     </a>
     <a href="https://github.com/yzh52521/think-mail/releases" ><img src="https://img.shields.io/github/release/yzh52521/think-mail.svg?color=4099DE" /></a> 
     <a href="https://packagist.org/packages/yzh52521/think-mail"><img src="https://img.shields.io/packagist/dt/yzh52521/think-mail.svg?color=" /></a> 
-    <a><img src="https://img.shields.io/badge/php-7.2+-59a9f8.svg?style=flat" /></a> 
+    <a><img src="https://img.shields.io/badge/php-8.0+-59a9f8.svg?style=flat" /></a> 
 </p>
 </div>
 
