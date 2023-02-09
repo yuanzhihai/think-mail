@@ -7,6 +7,7 @@
  * @copyright 2022 yzh52521 all rights reserved.
  * @license   http://www.apache.org/licenses/LICENSE-2.0
  */
+declare( strict_types = 1 );
 
 namespace mailer;
 
@@ -63,7 +64,7 @@ class Transport
      * @param array|TransportInterface $transport
      * @throws InvalidArgumentException on invalid argument.
      */
-    public function setTransport($transport): void
+    public function setTransport(TransportInterface|array $transport): void
     {
         if (!is_array( $transport ) && !$transport instanceof TransportInterface) {
             throw new InvalidArgumentException( '"'.get_class( $this ).'::transport" should be either object or array, "'.gettype( $transport ).'" given.' );
@@ -80,10 +81,10 @@ class Transport
         $config           = array_merge( Config::get( 'mailer' ),$config );
         $defaultFactories = \Symfony\Component\Mailer\Transport::getDefaultFactories();
         $transportObj     = new \Symfony\Component\Mailer\Transport( $defaultFactories );
-        if (array_key_exists('dsn', $config) && is_string($config['dsn'])) {
-            $transport = $transportObj->fromString($config['dsn']);
-        } elseif (array_key_exists('dsn', $config) && $config['dsn'] instanceof Dsn) {
-            $transport = $transportObj->fromDsnObject($config['dsn']);
+        if (array_key_exists( 'dsn',$config ) && is_string( $config['dsn'] )) {
+            $transport = $transportObj->fromString( $config['dsn'] );
+        } elseif (array_key_exists( 'dsn',$config ) && $config['dsn'] instanceof Dsn) {
+            $transport = $transportObj->fromDsnObject( $config['dsn'] );
         } elseif (array_key_exists( 'scheme',$config ) && array_key_exists( 'host',$config )) {
             $dsn       = new Dsn(
                 $config['scheme'],

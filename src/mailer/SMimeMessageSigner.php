@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare( strict_types = 1 );
 
 namespace mailer;
 
@@ -19,8 +19,8 @@ class SMimeMessageSigner implements MessageSignerInterface
         $this->signer = $signer;
     }
 
-    public function sign(Message $message, array $options = []): Message
+    public function sign(Message $message,array $options = []): Message
     {
-        return $this->signer->sign($message);
+        return $this->signer->sign( $message );
     }
 }

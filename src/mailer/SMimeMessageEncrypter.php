@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare( strict_types = 1 );
 
 namespace mailer;
 
@@ -21,6 +21,6 @@ class SMimeMessageEncrypter implements MessageEncrypterInterface
 
     public function encrypt(Message $message): Message
     {
-        return $this->encrypter->encrypt($message);
+        return $this->encrypter->encrypt( $message );
     }
 }

@@ -8,6 +8,8 @@
  * @license   http://www.apache.org/licenses/LICENSE-2.0
  */
 
+declare( strict_types = 1 );
+
 namespace mailer;
 
 use DateTimeImmutable;
@@ -636,12 +638,12 @@ class Mailer implements MessageWrapperInterface
             $transportInstance->setTransport( $transport );
             $mailer = $transportInstance->getSymfonyMailer();
 
-            if (!($this instanceof MessageWrapperInterface)) {
-                throw new InvalidArgumentException(sprintf(
+            if (!( $this instanceof MessageWrapperInterface )) {
+                throw new InvalidArgumentException( sprintf(
                     'The message must be an instance of "%s". The "%s" instance is received.',
                     MessageWrapperInterface::class,
-                    get_class($this),
-                ));
+                    get_class( $this ),
+                ) );
             }
 
             $message = $this->getSymfonyMessage();

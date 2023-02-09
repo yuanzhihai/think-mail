@@ -7,6 +7,7 @@
  * @copyright 2022 yzh52521 all rights reserved.
  * @license   http://www.apache.org/licenses/LICENSE-2.0
  */
+declare( strict_types = 1 );
 
 namespace mailer;
 
