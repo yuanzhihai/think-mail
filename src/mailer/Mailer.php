@@ -36,10 +36,6 @@ class Mailer implements MessageWrapperInterface
      */
     protected Email $message;
 
-    /**
-     * @var string|null 错误信息
-     */
-    protected ?string $err_msg;
 
     protected $html;
 
@@ -660,32 +656,13 @@ class Mailer implements MessageWrapperInterface
             $mailer->send( $message );
             return true;
         } catch ( TransportExceptionInterface $e ) {
-            $this->err_msg = $e->getMessage();
-            if (Config::get( 'mailer.debug' )) {
-                // 调试模式直接抛出异常
-                throw new InvalidArgumentException( $e->getMessage(),$e->getCode(),$e);
-            }
-            return false;
+            throw new InvalidArgumentException( $e->getMessage(),$e->getCode(),$e );
         } catch ( \Throwable $e ) {
-            $this->err_msg = $e->getMessage();
-            if (Config::get( 'mailer.debug' )) {
-                // 调试模式直接抛出异常
-                throw new InvalidArgumentException( $e->getMessage(),$e->getCode(),$e);
-            }
-            return false;
+            throw new InvalidArgumentException( $e->getMessage(),$e->getCode(),$e );
         }
     }
 
 
-    /**
-     * 获取错误信息
-     *
-     * @return string|null
-     */
-    public function getError(): ?string
-    {
-        return $this->err_msg;
-    }
 
     /**
      * 对嵌入元数据的变量进行处理
