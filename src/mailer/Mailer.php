@@ -655,9 +655,7 @@ class Mailer implements MessageWrapperInterface
             // 发送邮件
             $mailer->send( $message );
             return true;
-        } catch ( TransportExceptionInterface $e ) {
-            throw new InvalidArgumentException( $e->getMessage(),$e->getCode(),$e );
-        } catch ( \Throwable $e ) {
+        } catch ( TransportExceptionInterface|\Throwable $e ) {
             throw new InvalidArgumentException( $e->getMessage(),$e->getCode(),$e );
         }
     }
