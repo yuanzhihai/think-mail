@@ -663,14 +663,14 @@ class Mailer implements MessageWrapperInterface
             $this->err_msg = $e->getMessage();
             if (Config::get( 'mailer.debug' )) {
                 // 调试模式直接抛出异常
-                Log::debug( $e->getMessage() );
+                throw new InvalidArgumentException( $e->getMessage(),$e->getCode(),$e);
             }
             return false;
         } catch ( \Throwable $e ) {
             $this->err_msg = $e->getMessage();
             if (Config::get( 'mailer.debug' )) {
                 // 调试模式直接抛出异常
-                Log::debug( $e->getMessage() );
+                throw new InvalidArgumentException( $e->getMessage(),$e->getCode(),$e);
             }
             return false;
         }
