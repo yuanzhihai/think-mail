@@ -662,11 +662,7 @@ class Mailer implements MessageWrapperInterface
             return true;
         } catch ( TransportExceptionInterface|\Throwable $e ) {
             $this->errMsg = $e->getMessage();
-            // 异常处理
-            if (Config::get('debug')) {
-                throw new InvalidArgumentException( $e->getMessage(),$e->getCode(),$e );
-            }
-            return false;
+            throw new InvalidArgumentException( $e->getMessage(),$e->getCode(),$e );
         }
     }
 
