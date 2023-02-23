@@ -336,9 +336,15 @@ $mailer->init();
 $mailer->init()->to()->...->send();
 ```
 
+
 邮件发送失败会直接以异常抛出
-
-
+```
+try{
+    $mailer->send();
+}catch(\Throwable $e){
+   
+}
+```
 使用 `getHeaders()` 和 `getHeadersString()` 方法可以获取头信息
 `getHeaders()` 返回的是头信息数组, `getHeadersString()` 返回的是头信息字符串
 
