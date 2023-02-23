@@ -337,13 +337,9 @@ $mailer->init()->to()->...->send();
 ```
 
 
-邮件发送失败会直接以异常抛出
+开启 debug 模式后, 邮件发送失败会直接以异常抛出, 如果没有开启, 可以通过 getError() 获取错误信息
 ```
-try{
-    $mailer->send();
-}catch(\Throwable $e){
-   
-}
+$mailer->getError();
 ```
 使用 `getHeaders()` 和 `getHeadersString()` 方法可以获取头信息
 `getHeaders()` 返回的是头信息数组, `getHeadersString()` 返回的是头信息字符串
