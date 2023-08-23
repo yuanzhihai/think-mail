@@ -651,7 +651,7 @@ class Mailer implements MessageWrapperInterface
 
             $config           =config( 'mailer' );
             if (!$message->getFrom()) {
-                $message->from($config['from'][0]['address'],$config['from'][0]['name']);
+                $message->from($config['from']['address'],$config['from']['name']);
             }
 
             if ($this->encrypter !== null) {
