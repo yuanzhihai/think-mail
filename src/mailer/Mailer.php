@@ -649,6 +649,10 @@ class Mailer implements MessageWrapperInterface
 
             $message = $this->getSymfonyMessage();
 
+            if (!$message->getFrom()) {
+                $message->from(Config::get('mailer.from'));
+            }
+
             if ($this->encrypter !== null) {
                 $message = $this->encrypter->encrypt( $message );
             }
