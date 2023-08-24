@@ -40,6 +40,12 @@ return [
         'dsn'             => '',
         'debug'           => false, // 开启debug模式会直接抛出异常, 记录邮件发送日志
         'embed'           => 'embed:', // 邮件中嵌入图片元数据标记
+        //默认发信人
+        'from'     => [
+            'address' => 'hello@example.com',
+            'name'    => 'Example',
+        ]
+    ]
 ];
 
 ```
@@ -74,7 +80,7 @@ $mailer = new Mailer();
 ```
 use mailer\facade\Mailer;
 
-Mailer::from('10086@qq.com@qq.com')
+Mailer::from('10086@qq.com')
       ->to('your-mail@domain.com')
       ->subject('纯文本测试')
       ->text('欢迎您使用think-mail')
