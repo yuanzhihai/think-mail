@@ -21,7 +21,7 @@
 ## 安装
 
 ```
-composer require yuanzhihai/think-mail
+composer require yzh52521/think-mail
 ```
 
 ## 配置
