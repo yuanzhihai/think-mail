@@ -1,5 +1,5 @@
 {
-    "name": "yzh52521/think-mail",
+    "name": "yuanzhihai/think-mail",
     "description": "A powerful and beautiful php mailer for All of ThinkPHP and Other PHP Frameworks based symfony",
     "keywords": [
         "think-mail",
@@ -12,7 +12,7 @@
     "license": "Apache-2.0",
     "authors": [
         {
-            "name": "yzh52521",
+            "name": "yuanzhihai",
             "email": "yzh52521@gmail.com"
         }
     ],

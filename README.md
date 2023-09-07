@@ -2,12 +2,12 @@
 # Think Mail
 
 <p>
-    <a href="https://github.com/yzh52521/think-mail/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-7389D8.svg?style=flat" ></a>
+    <a href="https://github.com/yuanzhihai/think-mail/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-7389D8.svg?style=flat" ></a>
      <a href="https://styleci.io/repos/215738797">
         <img src="https://github.styleci.io/repos/215738797/shield" alt="StyleCI">
     </a>
-    <a href="https://github.com/yzh52521/think-mail/releases" ><img src="https://img.shields.io/github/release/yzh52521/think-mail.svg?color=4099DE" /></a> 
-    <a href="https://packagist.org/packages/yzh52521/think-mail"><img src="https://img.shields.io/packagist/dt/yzh52521/think-mail.svg?color=" /></a> 
+    <a href="https://github.com/yuanzhihai/think-mail/releases" ><img src="https://img.shields.io/github/release/yuanzhihai/think-mail.svg?color=4099DE" /></a> 
+    <a href="https://packagist.org/packages/yuanzhihai/think-mail"><img src="https://img.shields.io/packagist/dt/yuanzhihai/think-mail.svg?color=" /></a> 
     <a><img src="https://img.shields.io/badge/php-8.0+-59a9f8.svg?style=flat" /></a> 
 </p>
 </div>
@@ -21,7 +21,7 @@
 ## 安装
 
 ```
-composer require yzh52521/think-mail
+composer require yuanzhihai/think-mail
 ```
 
 ## 配置
@@ -352,7 +352,7 @@ $mailer->getError();
 
 ## Issues
 
-如果有遇到问题请提交 [issues](https://github.com/yzh52521/think-mail/issues)
+如果有遇到问题请提交 [issues](https://github.com/yuanzhihai/think-mail/issues)
 
 ## License
 
@@ -364,6 +364,6 @@ Apache 2.0
 * 方式一: 点击右上角`⭐Star`按钮
 * 方式二: 扫描下方二维码,打赏我
 <div style="float: left;text-align: left; width: 610px">
-<img src="https://github.com/yzh52521/webman-task/blob/main/1631693468455_.pic.jpg" alt="扫码打赏我" width="300" /><img src="https://github.com/yzh52521/webman-task/blob/main/1641693468493_.pic.jpg" alt="扫码打赏我" width="300" /></div>
+<img src="https://github.com/yuanzhihai/webman-task/blob/main/1631693468455_.pic.jpg" alt="扫码打赏我" width="300" /><img src="https://github.com/yuanzhihai/webman-task/blob/main/1641693468493_.pic.jpg" alt="扫码打赏我" width="300" /></div>
 
 
