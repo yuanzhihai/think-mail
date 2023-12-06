@@ -81,7 +81,7 @@ class Config
     private static function detect()
     {
         if (class_exists('\\think\\facade\\Config')) {
-            if (strpos(\think\App::VERSION, '6.0') !== false) {
+            if (strpos(\think\App::VERSION, '6') !== false) {
                 self::$config = \think\facade\Config::get('mail');
             } else {
                 self::$config = \think\facade\Config::get('mail.');
